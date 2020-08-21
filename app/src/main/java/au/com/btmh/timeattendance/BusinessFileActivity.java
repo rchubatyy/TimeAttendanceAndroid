@@ -42,6 +42,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
             Intent intent = new Intent(this,CheckInActivity.class);
             intent.putExtra("token",token);
             startActivity(intent);
+            //finish();
         }
         setContentView(R.layout.activity_business_file);
         businessFileList = findViewById(R.id.recordsList);
@@ -115,7 +116,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         Intent intent = new Intent(this,CheckInActivity.class);
         intent.putExtra("token",businessFileArray.get(selected).getToken());
         startActivity(intent);
-        finish();
+        //finish();
     }
 
 }

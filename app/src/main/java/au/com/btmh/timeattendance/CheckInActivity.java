@@ -9,9 +9,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -46,6 +43,8 @@ public class CheckInActivity extends AppCompatActivity
     private Button[] controlButtons;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private String userToken, dbToken;
+    private DatabaseAccess databaseAccess;
+    private CheckInInfo record;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,7 @@ public class CheckInActivity extends AppCompatActivity
         Volley.newRequestQueue(this).add(request);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        this.databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
     }
 
     @Override
@@ -95,6 +95,12 @@ public class CheckInActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
     }
 
     @Override
@@ -139,6 +145,7 @@ public class CheckInActivity extends AppCompatActivity
             public void onSuccess(Location location) {
                 results.setText("Updating location...");
                 JSONObject body = new JSONObject();
+                String time = "";
                 try {
                     body.put("UserToken", userToken);
                     body.put("DBToken", dbToken);
@@ -146,8 +153,11 @@ public class CheckInActivity extends AppCompatActivity
                     body.put("ActivityType", activityType);
                     body.put("GPSLat",location.getLatitude());
                     body.put("GPSLon",location.getLongitude());
+                    System.out.println(location.getLatitude());
+                    System.out.println(location.getLongitude());
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    body.put("PhDateTime",dateFormat.format(Calendar.getInstance().getTime()));
+                    time = dateFormat.format(Calendar.getInstance().getTime());
+                    body.put("PhDateTime",time);
                     body.put("isLiveDataOrSync", "L");
                     body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
                     body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
@@ -155,6 +165,7 @@ public class CheckInActivity extends AppCompatActivity
              catch (JSONException e) {
                 e.printStackTrace();
             }
+
                 uploadActivity(body);
             }
         });
@@ -168,34 +179,56 @@ public class CheckInActivity extends AppCompatActivity
         }
     }
 
-    private void uploadActivity(final JSONObject body){
+    private synchronized void uploadActivity(final JSONObject body) {
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 System.out.println(response);
                 try {
-                    if (response.getString("acdSuccess").equals("Y")){
-                        boolean isSite = response.getInt("acdSiteID") == 1;
-                        String siteName = response.getString("acdSiteName");
+                    boolean isSite = response.getInt("acdSiteID") == 1;
+                    String siteName = response.getString("acdSiteName");
+                    if (response.getString("acdSuccess").equals("Y")) {
+
                         Map<String, String> map = new HashMap();
                         map.put(ActivityState.CHECKIN.name(), "Checked in");
                         map.put(ActivityState.BREAKSTART.name(), "Started break");
                         map.put(ActivityState.BREAKEND.name(), "Ended break");
                         map.put(ActivityState.CHECKOUT.name(), "Checked out");
                         String result = map.get(body.getString("ActivityType"));
-                        if (isSite)
+                        if (isSite) {
                             result += ("\n at " + siteName);
+                        }
                         else
                             result += ("!\n" + siteName);
+
+                        record = new CheckInInfo(0, userToken, dbToken, body.getString("PhDateTime"), body.getDouble("GPSLat"),
+                                body.getDouble("GPSLon"), siteName, ActivityState.valueOf(body.getString("ActivityType")), true, response.getString("acdID"));
+                        System.out.println(record.getLat());
+                        System.out.println(record.getLon());
+                        databaseAccess.open();
+                        databaseAccess.insertRecord(record);
+                        databaseAccess.close();
                         results.setText(result);
-                    }
-                    else
+                    } else
                         results.setText(response.getString("acdErrorMessage"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, this);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    record = new CheckInInfo(0, userToken, dbToken, body.getString("PhDateTime"), body.getDouble("GPSLat"),
+                            body.getDouble("GPSLon"), "", ActivityState.valueOf(body.getString("ActivityType")), true, "");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                databaseAccess.open();
+                databaseAccess.insertRecord(record);
+                databaseAccess.close();
+            }
+        });
         Volley.newRequestQueue(this).add(request);
     }
 

@@ -86,6 +86,6 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         Intent intent = new Intent(this, BusinessFileActivity.class);
         intent.putExtra("userToken",token);
         startActivity(intent);
-        finish();
+        //finish();
     }
 }

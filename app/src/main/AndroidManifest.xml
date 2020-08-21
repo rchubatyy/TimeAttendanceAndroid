@@ -17,9 +17,11 @@
         <activity android:name=".CheckInActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".BusinessFileActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

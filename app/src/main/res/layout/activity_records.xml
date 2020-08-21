@@ -45,7 +45,6 @@
         android:gravity="left"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/recordsList"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include3">
 
@@ -54,12 +53,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingEnd="5dp"
-            android:text="Clear records older than" />
+            android:lines="1"
+            android:text="Clear records older than"
+            android:textAlignment="center"
+            android:textSize="12sp" />
 
         <Spinner
             android:id="@+id/noDays"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
@@ -68,9 +69,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="7dp"
-            android:paddingEnd="5dp"
-            android:text="days" />
+            android:paddingLeft="1dp"
+            android:paddingEnd="1dp"
+            android:text="days"
+            android:textAlignment="center"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/goButton"
