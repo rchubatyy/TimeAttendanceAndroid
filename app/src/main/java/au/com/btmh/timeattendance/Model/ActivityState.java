@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Model;
 
 public enum ActivityState {
     CHECKIN,

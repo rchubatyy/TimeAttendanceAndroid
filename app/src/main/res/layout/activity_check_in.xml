@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context=".CheckInActivity">
+    tools:context=".Activities.CheckInActivity">
 
     <TextView
         android:id="@+id/areWeReady"
@@ -81,6 +81,7 @@
         android:layout_height="wrap_content"
         android:lines="2"
         android:padding="1dp"
+        android:text="Activity registering results will appear here."
         app:layout_constraintBottom_toTopOf="@+id/myHistoryButton"
         app:layout_constraintStart_toStartOf="parent" />
 

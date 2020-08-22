@@ -1,6 +1,8 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Model;
 
 import java.io.Serializable;
+
+import au.com.btmh.timeattendance.Model.ActivityState;
 
 public class CheckInInfo implements Serializable {
 

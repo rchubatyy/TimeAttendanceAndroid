@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import au.com.btmh.timeattendance.Model.BusinessFile;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -36,6 +38,16 @@ public class UserManager {
         editor.putString("email", email);
         editor.putString("userToken", userToken);
         editor.apply();
+    }
+
+    public void logout(Context context){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putBoolean("loggedIn", false);
+        editor.putString("name", "");
+        editor.putString("email", "");
+        editor.putString("userToken", "");
+        editor.apply();
+        removedBusinessFile(context);
     }
 
     public synchronized void saveBusinessFiles(Context context, @NotNull ArrayList<BusinessFile> files){
@@ -79,6 +91,14 @@ public class UserManager {
         editor.putInt("businessFileSelected", index);
         editor.putString("businessFileName", file.getName());
         editor.putString("businessFileToken", file.getToken());
+        editor.apply();
+    }
+
+    public void removedBusinessFile(Context context){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putInt("businessFileSelected", -1);
+        editor.putString("businessFileName", "");
+        editor.putString("businessFileToken", "");
         editor.apply();
     }
 

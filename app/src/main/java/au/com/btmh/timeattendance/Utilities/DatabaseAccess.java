@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Utilities;
 
 
 import android.content.ContentValues;
@@ -6,22 +6,36 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import au.com.btmh.timeattendance.Model.ActivityState;
+import au.com.btmh.timeattendance.Model.CheckInInfo;
+
+import static au.com.btmh.timeattendance.Utilities.Constants.REGISTER_USER_ACTIVITY;
 
 public class DatabaseAccess {
     private SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
     private static DatabaseAccess instance;
 
-    //private String userToken, dbToken;
-
 
     private DatabaseAccess(Context context) {
         this.openHelper = new DatabaseOpenHelper(context);
-        //this.userToken = UserManager.getInstance().getParam(context,"userToken");
-        //this.dbToken = UserManager.getInstance().getParam(context,"dbToken"));
     }
 
 
@@ -57,6 +71,13 @@ public class DatabaseAccess {
 
     }
 
+    /**
+     *
+     * @param context
+     * @param unsyncedOnly
+     * @return
+     */
+    @Deprecated
     public List<String> getAllRecordTexts(Context context, boolean unsyncedOnly) {
         List<String> list = new ArrayList<>();
         Cursor cursor = database.rawQuery("SELECT RecordTime, Type FROM tblRecords " +
@@ -86,7 +107,6 @@ public class DatabaseAccess {
         while (!cursor.isAfterLast()) {
             CheckInInfo record = new CheckInInfo(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getDouble(4),cursor.getDouble(5),
                     cursor.getString(6),ActivityState.valueOf(cursor.getString(7)),cursor.getString(8).equals("L"), cursor.getString(9));
-            System.out.println("" + cursor.getDouble(6)+ " " + cursor.getString(9));
             list.add(record);
             cursor.moveToNext();
         }
@@ -100,8 +120,58 @@ public class DatabaseAccess {
         listener.reloadData();
     }
 
+    public void sync (Context context, final onSyncCompleteListener listener) throws JSONException {
+        List<CheckInInfo> unsynced = new ArrayList<>();
+        unsynced = getAllRecords(context, true);
+        if (unsynced.isEmpty()){
+            listener.showMessage(true, "Nothing to sync");
+        }
+        for (final CheckInInfo record: unsynced){
+            JSONObject body = new JSONObject();
+            body.put("UserToken", record.getUserToken());
+            body.put("DBToken", record.getDbToken());
+            body.put("ActivityType", record.getState().name());
+            body.put("GPSLat",record.getLat());
+            body.put("GPSLon",record.getLon());
+            String time = record.getTime().replace('-','/');
+            body.put("PhDateTime",time);
+            body.put("isLiveDataOrSync", "S");
+            body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
+            body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
+            final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    int id = record.getId();
+                    ContentValues values = new ContentValues();
+                    values.put("isLiveData", "S");
+                    try {
+                        values.put("resultID", response.getString("acdID"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    database.update("tblRecords",values,"id = " +id, null);
+                    listener.showMessage(false, "Synced!");
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    listener.showMessage(true, "Failed to sync");
+                }
+            });
+            request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                    1,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            Volley.newRequestQueue(context).add(request);
+        }
+    }
+
     public interface onClearCompleteListener{
         void reloadData();
+    }
+
+    public interface onSyncCompleteListener{
+        void showMessage(boolean isError, String message);
     }
 
     private String checkTokensQuery(Context context){

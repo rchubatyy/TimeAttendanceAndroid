@@ -10,17 +10,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingsActivity"
+        <activity android:name=".Activities.SettingsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".RecordsActivity"
+        <activity android:name=".Activities.RecordsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CheckInActivity"
+        <activity android:name=".Activities.CheckInActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".BusinessFileActivity"
+        <activity android:name=".Activities.BusinessFileActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>

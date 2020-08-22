@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,7 +35,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static au.com.btmh.timeattendance.Constants.*;
+import au.com.btmh.timeattendance.Model.ActivityState;
+import au.com.btmh.timeattendance.Model.CheckInInfo;
+import au.com.btmh.timeattendance.Utilities.DatabaseAccess;
+import au.com.btmh.timeattendance.R;
+import au.com.btmh.timeattendance.Utilities.UserManager;
+
+import static au.com.btmh.timeattendance.Utilities.Constants.*;
 
 public class CheckInActivity extends AppCompatActivity
         implements Response.Listener<JSONObject>, Response.ErrorListener, View.OnClickListener {
@@ -130,13 +137,8 @@ public class CheckInActivity extends AppCompatActivity
     @Override
     public void onClick(final View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            areWeReady.setText("Sorry, you can't check in because location is not available.");
+            setControlButtonsEnabled(false);
             return;
         }
         results.setText("Getting location...");
@@ -180,6 +182,11 @@ public class CheckInActivity extends AppCompatActivity
     }
 
     private synchronized void uploadActivity(final JSONObject body) {
+        final Map<String, String> map = new HashMap();
+        map.put(ActivityState.CHECKIN.name(), "Checked in");
+        map.put(ActivityState.BREAKSTART.name(), "Started break");
+        map.put(ActivityState.BREAKEND.name(), "Ended break");
+        map.put(ActivityState.CHECKOUT.name(), "Checked out");
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -189,11 +196,7 @@ public class CheckInActivity extends AppCompatActivity
                     String siteName = response.getString("acdSiteName");
                     if (response.getString("acdSuccess").equals("Y")) {
 
-                        Map<String, String> map = new HashMap();
-                        map.put(ActivityState.CHECKIN.name(), "Checked in");
-                        map.put(ActivityState.BREAKSTART.name(), "Started break");
-                        map.put(ActivityState.BREAKEND.name(), "Ended break");
-                        map.put(ActivityState.CHECKOUT.name(), "Checked out");
+
                         String result = map.get(body.getString("ActivityType"));
                         if (isSite) {
                             result += ("\n at " + siteName);
@@ -221,14 +224,22 @@ public class CheckInActivity extends AppCompatActivity
                 try {
                     record = new CheckInInfo(0, userToken, dbToken, body.getString("PhDateTime"), body.getDouble("GPSLat"),
                             body.getDouble("GPSLon"), "", ActivityState.valueOf(body.getString("ActivityType")), true, "");
+                    String result = map.get(body.getString("ActivityType"));
+                    result += "!\nFailed to connect. Saving activity on the phone.";
+                    databaseAccess.open();
+                    databaseAccess.insertRecord(record);
+                    databaseAccess.close();
+                    results.setText(result);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                databaseAccess.open();
-                databaseAccess.insertRecord(record);
-                databaseAccess.close();
+
+
             }
         });
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(this).add(request);
     }
 

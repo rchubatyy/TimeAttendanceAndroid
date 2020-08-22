@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -18,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import au.com.btmh.timeattendance.Model.CheckInInfo;
+import au.com.btmh.timeattendance.Utilities.DatabaseAccess;
+import au.com.btmh.timeattendance.R;
 
 public class RecordsActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
 
@@ -41,6 +45,10 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         noDays.setAdapter(arrayAdapter);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
+    }
+
+    protected void onResume() {
+        super.onResume();
         showRecords();
     }
 

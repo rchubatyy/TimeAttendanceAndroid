@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Utilities;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

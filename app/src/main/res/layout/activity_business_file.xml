@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".BusinessFileActivity">
+    tools:context=".Activities.BusinessFileActivity">
 
     <include
         layout="@layout/our_logo_and_info_layout"

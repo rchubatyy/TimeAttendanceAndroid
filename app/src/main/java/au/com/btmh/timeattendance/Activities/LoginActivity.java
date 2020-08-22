@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,7 +18,11 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import static au.com.btmh.timeattendance.Constants.*;
+
+import au.com.btmh.timeattendance.R;
+import au.com.btmh.timeattendance.Utilities.UserManager;
+
+import static au.com.btmh.timeattendance.Utilities.Constants.*;
 
 public class LoginActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
@@ -37,6 +40,11 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
         errorMessage = findViewById(R.id.errorMessage);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        errorMessage.setVisibility(View.INVISIBLE);
     }
 
     @Override

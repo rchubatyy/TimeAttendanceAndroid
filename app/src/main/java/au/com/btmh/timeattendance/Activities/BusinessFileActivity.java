@@ -1,4 +1,4 @@
-package au.com.btmh.timeattendance;
+package au.com.btmh.timeattendance.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +25,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static au.com.btmh.timeattendance.Constants.GET_USER_BUSINESS_FILES_LIST;
+import au.com.btmh.timeattendance.Model.BusinessFile;
+import au.com.btmh.timeattendance.R;
+import au.com.btmh.timeattendance.Utilities.UserManager;
+
+import static au.com.btmh.timeattendance.Utilities.Constants.GET_USER_BUSINESS_FILES_LIST;
 
 public class BusinessFileActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener, ListView.OnItemClickListener{
 
@@ -39,7 +43,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         super.onCreate(savedInstanceState);
         if (UserManager.getInstance().fileSelected(this) >= 0) {
             String token = UserManager.getInstance().getParam(this,"businessFileToken");
-            Intent intent = new Intent(this,CheckInActivity.class);
+            Intent intent = new Intent(this, CheckInActivity.class);
             intent.putExtra("token",token);
             startActivity(intent);
             //finish();
