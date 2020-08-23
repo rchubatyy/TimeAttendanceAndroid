@@ -136,6 +136,11 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onClick(final View view) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final String time = dateFormat.format(Calendar.getInstance().getTime());
+        final String activityType = view.getResources().getResourceEntryName(view.getId());
+        ActivityState state = ActivityState.valueOf(activityType);
+        record = new CheckInInfo(userToken, dbToken, time, state, true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             areWeReady.setText("Sorry, you can't check in because location is not available.");
             setControlButtonsEnabled(false);
@@ -147,22 +152,17 @@ public class CheckInActivity extends AppCompatActivity
             public void onSuccess(Location location) {
                 results.setText("Updating location...");
                 JSONObject body = new JSONObject();
-                String time = "";
                 try {
                     body.put("UserToken", userToken);
                     body.put("DBToken", dbToken);
-                    String activityType = view.getResources().getResourceEntryName(view.getId());
                     body.put("ActivityType", activityType);
                     body.put("GPSLat",location.getLatitude());
                     body.put("GPSLon",location.getLongitude());
-                    System.out.println(location.getLatitude());
-                    System.out.println(location.getLongitude());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    time = dateFormat.format(Calendar.getInstance().getTime());
                     body.put("PhDateTime",time);
                     body.put("isLiveDataOrSync", "L");
                     body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
                     body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
+                    record.setLocation(location.getLatitude(), location.getLongitude());
                 }
              catch (JSONException e) {
                 e.printStackTrace();
@@ -204,16 +204,16 @@ public class CheckInActivity extends AppCompatActivity
                         else
                             result += ("!\n" + siteName);
 
-                        record = new CheckInInfo(0, userToken, dbToken, body.getString("PhDateTime"), body.getDouble("GPSLat"),
-                                body.getDouble("GPSLon"), siteName, ActivityState.valueOf(body.getString("ActivityType")), true, response.getString("acdID"));
-                        System.out.println(record.getLat());
-                        System.out.println(record.getLon());
-                        databaseAccess.open();
-                        databaseAccess.insertRecord(record);
-                        databaseAccess.close();
+                        record.setResult(siteName, response.getString("acdID"));
                         results.setText(result);
-                    } else
+                    } else {
                         results.setText(response.getString("acdErrorMessage"));
+                        record.setResult("","");
+                    }
+
+                    databaseAccess.open();
+                    databaseAccess.insertRecord(record);
+                    databaseAccess.close();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -222,8 +222,7 @@ public class CheckInActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-                    record = new CheckInInfo(0, userToken, dbToken, body.getString("PhDateTime"), body.getDouble("GPSLat"),
-                            body.getDouble("GPSLon"), "", ActivityState.valueOf(body.getString("ActivityType")), true, "");
+                    record.setResult("","");
                     String result = map.get(body.getString("ActivityType"));
                     result += "!\nFailed to connect. Saving activity on the phone.";
                     databaseAccess.open();

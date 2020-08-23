@@ -56,6 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void sync(View v) throws JSONException {
         syncStatus.setVisibility(View.VISIBLE);
         syncStatus.setTextColor(ContextCompat.getColor(this,R.color.colorMain));
+        syncStatus.setText("Syncing...");
         databaseAccess.open();
         databaseAccess.sync(this, new DatabaseAccess.onSyncCompleteListener() {
             @Override

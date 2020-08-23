@@ -122,7 +122,8 @@ public class DatabaseAccess {
 
     public void sync (Context context, final onSyncCompleteListener listener) throws JSONException {
         List<CheckInInfo> unsynced = new ArrayList<>();
-        unsynced = getAllRecords(context, true);
+        unsynced = getAllRecords(context,true);
+        final boolean[] syncSuccess = {true};
         if (unsynced.isEmpty()){
             listener.showMessage(true, "Nothing to sync");
         }
@@ -145,12 +146,15 @@ public class DatabaseAccess {
                     ContentValues values = new ContentValues();
                     values.put("isLiveData", "S");
                     try {
+                        if (response.getString("acdSuccess").equals("N") && syncSuccess[0])
+                            syncSuccess[0] = false;
                         values.put("resultID", response.getString("acdID"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     database.update("tblRecords",values,"id = " +id, null);
-                    listener.showMessage(false, "Synced!");
+
+                    listener.showMessage(!syncSuccess[0], syncSuccess[0] ? "Synced!" : "Some items did not sync");
                 }
             }, new Response.ErrorListener() {
                 @Override

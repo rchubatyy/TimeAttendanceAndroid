@@ -18,6 +18,14 @@ public class CheckInInfo implements Serializable {
         this.state = state;
     }
 
+    public CheckInInfo(String userToken, String dbToken, String time, ActivityState state, boolean isLiveData){
+        this.userToken = userToken;
+        this.dbToken = dbToken;
+        this.time = time.replace('/', '-');
+        this.state = state;
+        this.isLiveData = isLiveData;
+    }
+
     public CheckInInfo(int id, String userToken, String dbToken, String time,  Double lat, Double lon, String site, ActivityState state, boolean isLiveData, String resultID) {
         this.id = id;
         this.userToken = userToken;
@@ -69,5 +77,15 @@ public class CheckInInfo implements Serializable {
 
     public boolean isLiveData() {
         return isLiveData;
+    }
+
+    public void setLocation(Double lat, Double lon){
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    public void setResult(String site, String resultID){
+        this.site = site;
+        this.resultID = resultID;
     }
 }
