@@ -2,9 +2,12 @@ package au.com.btmh.timeattendance.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -32,10 +35,10 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (UserManager.getInstance().isLoggedIn(this)){
-            String token = UserManager.getInstance().getParam(this,"userToken");
-            toBusinessFileSelect(token);
-        }
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        continueIfLoggedIn();
         setContentView(R.layout.activity_login);
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -45,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     protected void onResume() {
         super.onResume();
         errorMessage.setVisibility(View.INVISIBLE);
+        continueIfLoggedIn();
     }
 
     @Override
@@ -94,6 +98,12 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         Intent intent = new Intent(this, BusinessFileActivity.class);
         intent.putExtra("userToken",token);
         startActivity(intent);
-        //finish();
+    }
+
+    private void continueIfLoggedIn(){
+        if (UserManager.getInstance().isLoggedIn(this)){
+            String token = UserManager.getInstance().getParam(this,"userToken");
+            toBusinessFileSelect(token);
+        }
     }
 }

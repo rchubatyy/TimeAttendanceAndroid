@@ -41,13 +41,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (UserManager.getInstance().fileSelected(this) >= 0) {
-            String token = UserManager.getInstance().getParam(this,"businessFileToken");
-            Intent intent = new Intent(this, CheckInActivity.class);
-            intent.putExtra("token",token);
-            startActivity(intent);
-            //finish();
-        }
+        continueIfSelectedFile();
         setContentView(R.layout.activity_business_file);
         businessFileList = findViewById(R.id.recordsList);
         okButton = findViewById(R.id.okButton);
@@ -61,6 +55,11 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         }
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, GET_USER_BUSINESS_FILES_LIST, body, this, this);
         Volley.newRequestQueue(this).add(request);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        continueIfSelectedFile();
     }
 
     @Override
@@ -120,7 +119,15 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         Intent intent = new Intent(this,CheckInActivity.class);
         intent.putExtra("token",businessFileArray.get(selected).getToken());
         startActivity(intent);
-        //finish();
+    }
+
+    private void continueIfSelectedFile(){
+        if (UserManager.getInstance().fileSelected(this) >= 0) {
+            String token = UserManager.getInstance().getParam(this,"businessFileToken");
+            Intent intent = new Intent(this, CheckInActivity.class);
+            intent.putExtra("token",token);
+            startActivity(intent);
+        }
     }
 
 }
