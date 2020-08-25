@@ -332,6 +332,11 @@ public class CheckInActivity extends AppCompatActivity
                         prepareActivity(location);
                 }
 
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    results.setText("Failed to get location.");
+                }
             });
         }
     }
