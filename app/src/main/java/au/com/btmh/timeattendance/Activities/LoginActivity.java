@@ -13,8 +13,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -76,6 +82,14 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     @Override
     public void onErrorResponse(VolleyError error) {
         passwordField.setText("");
+        String message = null;
+        if (error instanceof NetworkError || error instanceof AuthFailureError)
+            showMessage(true, "No Internet - Failed to log in");
+        else if (error instanceof ServerError)
+            showMessage(true, "Server error - Failed to log in");
+        else if (error instanceof TimeoutError)
+            showMessage(true, "Connection timeout - Failed to log in");
+        else
         showMessage(true, "Failed to log in");
     }
 

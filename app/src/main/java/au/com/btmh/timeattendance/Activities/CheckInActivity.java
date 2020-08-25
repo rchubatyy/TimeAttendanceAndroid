@@ -23,9 +23,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -251,7 +255,13 @@ public class CheckInActivity extends AppCompatActivity
                 try {
                     record.setResult("", "");
                     String result = map.get(body.getString("ActivityType"));
-                    result += "!\nFailed to connect. Saving activity on the phone.";
+                    if (error instanceof ServerError)
+                        result += "!\nServer error.";
+                    else if (error instanceof TimeoutError)
+                        result += "!\nConnection timeout.";
+                    else
+                        result += "!\nFailed to connect.";
+                        result +=  " Saving activity on the phone.";
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
