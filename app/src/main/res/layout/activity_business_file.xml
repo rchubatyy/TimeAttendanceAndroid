@@ -33,6 +33,7 @@
         android:backgroundTint="@color/colorDisabled"
         android:enabled="false"
         android:onClick="toMainScreen"
+        android:textSize="20sp"
         android:text="OK"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:fontFamily="sans-serif-medium"
+        android:textSize="20sp"
         android:text="Select Business File"
         app:layout_constraintBottom_toTopOf="@+id/recordsList"
         app:layout_constraintStart_toStartOf="parent" />

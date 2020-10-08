@@ -22,11 +22,24 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorMain"
+        android:backgroundTint="@color/colorButton"
         android:onClick="toSettings"
+        android:textSize="20sp"
         android:text="Settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/syncButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorButton"
+        android:onClick="syncData"
+        android:text="Sync"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         android:id="@+id/include3"
@@ -55,13 +68,15 @@
             android:layout_weight="1"
             android:lines="1"
             android:text="Clear records older than"
+            android:padding="5dp"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/noDays"
-            android:layout_width="80dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
+            android:background="@drawable/text_edit_shape"
             android:layout_weight="1" />
 
         <TextView
@@ -71,17 +86,19 @@
             android:layout_weight="1"
             android:paddingLeft="1dp"
             android:paddingEnd="1dp"
+            android:padding="5dp"
             android:text="days"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/goButton"
             style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorMain"
+            android:backgroundTint="@color/colorButton"
             android:onClick="clear"
+            android:textSize="18sp"
             android:text="Go!" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

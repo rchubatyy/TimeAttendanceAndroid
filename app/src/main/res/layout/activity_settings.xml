@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="2dp"
+            android:textSize="18dp"
             android:text="TextView" />
 
         <TextView
@@ -39,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
+            android:textSize="18dp"
             android:text="TextView" />
 
         <TextView
@@ -46,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
+            android:textSize="18dp"
             android:text="TextView" />
 
         <Button
@@ -53,9 +56,10 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorMain"
+            android:backgroundTint="@color/colorButton"
             android:onClick="logOut"
             android:text="De-register"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -64,9 +68,10 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorMain"
+            android:backgroundTint="@color/colorButton"
             android:onClick="changeFile"
             android:text="Change business file"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -75,9 +80,10 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorMain"
+            android:backgroundTint="@color/colorButton"
             android:onClick="sync"
             android:text="Sync all activity"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -86,6 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
+            android:textSize="18dp"
             android:text="Syncing..."
             android:visibility="invisible" />
     </LinearLayout>

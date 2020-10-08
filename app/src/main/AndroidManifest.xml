@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="au.com.btmh.timeattendance">
+    package="app.olivs.OnTime">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -10,22 +10,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.SettingsActivity"
+        <activity android:name="app.olivs.OnTime.Activities.SettingsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.RecordsActivity"
+        <activity android:name="app.olivs.OnTime.Activities.RecordsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.CheckInActivity"
+        <activity android:name="app.olivs.OnTime.Activities.CheckInActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.BusinessFileActivity"
+        <activity android:name="app.olivs.OnTime.Activities.BusinessFileActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name="app.olivs.OnTime.Activities.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="app.olivs.OnTime.Activities.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

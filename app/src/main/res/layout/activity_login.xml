@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:text="E-mail address"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/emailField"
@@ -35,6 +35,7 @@
             android:background="@drawable/text_edit_shape"
             android:ems="10"
             android:inputType="textEmailAddress"
+            android:textSize="22sp"
             android:padding="5dp" />
 
         <TextView
@@ -43,7 +44,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:text="Password"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/passwordField"
@@ -55,6 +56,7 @@
             android:background="@drawable/text_edit_shape"
             android:ems="10"
             android:inputType="textPassword"
+            android:textSize="22sp"
             android:padding="5dp" />
 
         <Button
@@ -62,9 +64,10 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorMain"
+            android:backgroundTint="@color/colorButton"
             android:onClick="onLoginPressed"
             android:text="Log in"
+            android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -75,7 +78,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="Forgot password"
             android:textColor="@color/colorMain"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/errorMessage"
@@ -85,7 +88,7 @@
             android:text="Error message"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:visibility="invisible" />
 
     </LinearLayout>
@@ -97,7 +100,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="Learn more &amp; Register"
         android:textColor="@color/colorMain"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
