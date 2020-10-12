@@ -1,6 +1,7 @@
 package app.olivs.OnTime.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,11 +9,13 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -138,7 +141,7 @@ public class CheckInActivity extends AppCompatActivity
             String success = response.getString("cmpSuccess");
             if (success.equals("Y")) {
                 String infoHTML = response.getString("cmpInfoMessage");
-                companyInformation.setText(Html.fromHtml(infoHTML));
+                companyInformation.setText(Html.fromHtml(infoHTML).toString().replaceAll("\n",""));
             } else {
                 String error = response.getString("cmpError");
                 companyInformation.setText(error);
@@ -214,6 +217,13 @@ public class CheckInActivity extends AppCompatActivity
         map.put(ActivityState.BREAKSTART.name(), "Started break");
         map.put(ActivityState.BREAKEND.name(), "Ended break");
         map.put(ActivityState.CHECKOUT.name(), "Checked out");
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setPositiveButton("Go back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -231,14 +241,19 @@ public class CheckInActivity extends AppCompatActivity
 
                         record.setResult(siteName, response.getString("acdID"));
                         results.setText(result);
+                        alertDialogBuilder.setMessage(result);
                     } else {
-                        results.setText(response.getString("acdErrorMessage"));
+                        String message = response.getString("acdErrorMessage");
+                        results.setText(message);
                         record.setResult("", "");
+                        alertDialogBuilder.setMessage(message);
                     }
 
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -251,6 +266,21 @@ public class CheckInActivity extends AppCompatActivity
                     String result = map.get(body.getString("ActivityType"));
                     result += "!\nCould not connect to cloud. Activity saved on the phone. You need to Sync later.";
                     results.setText(result);
+                    databaseAccess.open();
+                    databaseAccess.insertRecord(record);
+                    databaseAccess.close();
+                    alertDialogBuilder.setMessage(result);
+                    alertDialogBuilder.setNeutralButton("How to sync?", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("https://know.olivs.app/time-attendance/mobile-app/how-to-sync-your-activities-with-cloud"));
+                            browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(browserIntent);
+                        }
+                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

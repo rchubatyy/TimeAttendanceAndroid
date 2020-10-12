@@ -16,17 +16,17 @@ import app.olivs.OnTime.Utilities.UserManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private TextView userName, email, businessFile, syncStatus;
+    private TextView syncStatus;
     private DatabaseAccess databaseAccess;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        userName = findViewById(R.id.userName);
+        TextView userName = findViewById(R.id.userName);
         userName.setText(UserManager.getInstance().getParam(this, "name"));
-        email = findViewById(R.id.email);
+        TextView email = findViewById(R.id.email);
         email.setText("Your login: " + UserManager.getInstance().getParam(this, "email"));
-        businessFile = findViewById(R.id.businessFile);
+        TextView businessFile = findViewById(R.id.businessFile);
         businessFile.setText("Registered with: " + UserManager.getInstance().getParam(this, "businessFileName"));
         syncStatus = findViewById(R.id.syncStatus);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());

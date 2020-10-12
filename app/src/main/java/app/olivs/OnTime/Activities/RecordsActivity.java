@@ -1,11 +1,14 @@
 package app.olivs.OnTime.Activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +29,6 @@ import app.olivs.OnTime.R;
 
 public class RecordsActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
 
-    private Spinner noDays;
     private String noDaysSelected;
     private List<CheckInInfo> records;
     private ListView recordsList;
@@ -36,7 +38,7 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records);
-        noDays = findViewById(R.id.noDays);
+        Spinner noDays = findViewById(R.id.noDays);
         noDays.setOnItemSelectedListener(this);
         recordsList = findViewById(R.id.recordsList);
         ArrayList<Integer> options = new ArrayList<>();
@@ -70,6 +72,7 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
     }
 
     public void syncData(View v) throws JSONException {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         databaseAccess.open();
         databaseAccess.sync(this, new DatabaseAccess.onSyncCompleteListener() {
             @Override
@@ -77,6 +80,17 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
                 if (!isError){
                     showRecords();
                 }
+                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+
+                });
+                alertDialogBuilder.setMessage(message);
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                if(!isFinishing())
+                alertDialog.show();
             }
         });
     }
@@ -86,7 +100,7 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
         records = databaseAccess.getAllRecords(this,false);
         ArrayAdapter<String> recordsAdapter = new ArrayAdapter<String>(this, R.layout.text_view_cell_layout, R.id.listViewItem, getRecordData(records)){
             @Override
-            public View getView(int position, View convertView, ViewGroup parent){
+            public View getView(int position, View convertView, @NotNull ViewGroup parent){
                 View view = super.getView(position, convertView, parent);
                 TextView text = view.findViewById(R.id.listViewItem);
                 if(records.get(position).getResultID().equals(""))

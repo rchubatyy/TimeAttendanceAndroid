@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        applicationId "au.com.btmh.timeattendance"
+        applicationId 'app.olivs.OnTime'
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1

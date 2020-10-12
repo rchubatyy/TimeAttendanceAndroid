@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -80,7 +81,6 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     @Override
     public void onErrorResponse(VolleyError error) {
         passwordField.setText("");
-        String message = null;
         if (error instanceof NetworkError || error instanceof AuthFailureError)
             showMessage(true, "No Internet - Failed to log in");
         else if (error instanceof ServerError)
@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     }
 
     public void onLoginPressed(View view) throws JSONException {
+        hideKeyboard(this);
         showMessage(false, "Logging in...");
         JSONObject body = new JSONObject();
         body.put("Email",emailField.getText());
@@ -117,5 +118,16 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
             String token = UserManager.getInstance().getParam(this,"userToken");
             toBusinessFileSelect(token);
         }
+    }
+
+    private void hideKeyboard(AppCompatActivity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

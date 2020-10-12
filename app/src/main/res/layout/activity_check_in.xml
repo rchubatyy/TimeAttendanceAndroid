@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:padding="1dp"
         android:text="Getting status..."
-        android:textSize = "20sp"
+        android:textSize="20sp"
+        app:autoSizeMinTextSize="15dp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/companyInformation" />
 
@@ -24,7 +26,9 @@
         android:maxLines="7"
         android:padding="1dp"
         android:text="Loading information..."
-        android:textSize = "20sp"
+        android:textSize="20sp"
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
@@ -68,8 +72,9 @@
         android:layout_height="wrap_content"
         android:lines="2"
         android:padding="1dp"
-        android:textSize = "20sp"
         android:text="Activity registering results will appear here."
+        android:textSize="20sp"
+        app:autoSizeTextType="none"
         app:layout_constraintBottom_toTopOf="@+id/myHistoryButton"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -88,9 +93,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:textSize = "20sp"
             android:enabled="false"
-            android:text="Check\nin" />
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="Check in"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,9 +132,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:textSize = "20sp"
             android:enabled="false"
-            android:text="Check\nOut" />
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="Check Out"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
