@@ -125,6 +125,7 @@ public class DatabaseAccess {
         if (unsynced.isEmpty()){
             listener.showMessage(true, "Nothing to sync");
         }
+        final int[] unsyncedNo = {unsynced.size()};
         for (final CheckInInfo record: unsynced){
             JSONObject body = new JSONObject();
             body.put("UserToken", record.getUserToken());
@@ -151,13 +152,15 @@ public class DatabaseAccess {
                         e.printStackTrace();
                     }
                     database.update("tblRecords",values,"id = " +id, null);
-
+                    unsyncedNo[0]--;
+                    if (unsyncedNo[0] == 0)
                     listener.showMessage(!syncSuccess[0], syncSuccess[0] ? "Synced!" : "Some items did not sync");
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    unsyncedNo[0]--;
+                    if (unsyncedNo[0] == 0)
                     listener.showMessage(true, "Failed to sync");
                 }
             });
