@@ -16,8 +16,8 @@
         android:textSize="20sp"
         app:autoSizeMinTextSize="15dp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/companyInformation" />
+        app:layout_constraintBottom_toTopOf="@+id/results"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/companyInformation"
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorButton"
         android:onClick="toMyHistory"
-        android:text="history"
+        android:text="My History"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -68,14 +68,14 @@
 
     <TextView
         android:id="@+id/results"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lines="2"
         android:padding="1dp"
-        android:text="Activity registering results will appear here."
         android:textSize="20sp"
         app:autoSizeTextType="none"
         app:layout_constraintBottom_toTopOf="@+id/myHistoryButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
@@ -83,9 +83,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="7dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/results"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/CHECKIN"
@@ -111,9 +112,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:textSize = "20sp"
                 android:enabled="false"
-                android:text="Start\nBreak" />
+                android:text="Start\nBreak"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/BREAKEND"
@@ -121,9 +122,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:textSize = "20sp"
                 android:enabled="false"
-                android:text="Finish\nbreak" />
+                android:singleLine="false"
+                android:text="Finish\nbreak"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <Button

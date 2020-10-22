@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +31,16 @@ public class SettingsActivity extends AppCompatActivity {
         businessFile.setText("Registered with: " + UserManager.getInstance().getParam(this, "businessFileName"));
         syncStatus = findViewById(R.id.syncStatus);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
+        TextView link = findViewById(R.id.link);
+        link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://know.olivs.app/time-attendance/mobile-app/"));
+                browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(browserIntent);
+            }
+        });
     }
 
     protected void onResume() {

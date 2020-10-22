@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.view.View;
@@ -97,7 +98,7 @@ public class CheckInActivity extends AppCompatActivity
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, GET_COMPANY_INFORMATION, body, this, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                companyInformation.setText("Failed to load company information.");
+                companyInformation.setText("Failed to load company information. Try again later.");
             }
         });
         Volley.newRequestQueue(this).add(request);
@@ -163,7 +164,7 @@ public class CheckInActivity extends AppCompatActivity
         if (!getLocationReadyStatus(manager) ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             areWeReady.setText("Sorry, you can't use the service because location is not available.");
-            setControlButtonsEnabled(false);
+
             return;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -211,22 +212,31 @@ public class CheckInActivity extends AppCompatActivity
         uploadActivity();
     }
 
-    private synchronized void uploadActivity() {
+    private synchronized void uploadActivity() {setControlButtonsEnabled(false);
         final Map<String, String> map = new HashMap();
         map.put(ActivityState.CHECKIN.name(), "Checked in");
         map.put(ActivityState.BREAKSTART.name(), "Started break");
         map.put(ActivityState.BREAKEND.name(), "Ended break");
         map.put(ActivityState.CHECKOUT.name(), "Checked out");
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setPositiveButton("Go back", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton("Go OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
             }
         });
+        alertDialogBuilder.setTitle("Could not connect to service, but your activity is saved on your phone.");
+        alertDialogBuilder.setMessage("You need to sync the activity later. To do this, go to Settings > Sync all activity.");
+        final Runnable runnable = new Runnable(){
+            @Override
+            public void run() {
+                setControlButtonsEnabled(true);
+            }
+        };
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                new Handler(Looper.getMainLooper()).postDelayed(runnable,3000);
                 try {
                     boolean isSite = response.getInt("acdSiteID") == 1;
                     String siteName = response.getString("acdSiteName");
@@ -252,8 +262,6 @@ public class CheckInActivity extends AppCompatActivity
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -262,23 +270,14 @@ public class CheckInActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
+                    new Handler(Looper.getMainLooper()).postDelayed(runnable,3000);
                     record.setResult("", "");
                     String result = map.get(body.getString("ActivityType"));
-                    result += "!\nCould not connect to cloud. Activity saved on the phone. You need to Sync later.";
+                    result += "!\nCould not connect to service.";
                     results.setText(result);
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
-                    alertDialogBuilder.setMessage(result);
-                    alertDialogBuilder.setNeutralButton("How to sync?", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                    Uri.parse("https://know.olivs.app/time-attendance/mobile-app/how-to-sync-your-activities-with-cloud"));
-                            browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getApplicationContext().startActivity(browserIntent);
-                        }
-                    });
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 } catch (JSONException e) {

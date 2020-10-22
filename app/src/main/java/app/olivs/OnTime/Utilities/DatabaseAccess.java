@@ -164,7 +164,7 @@ public class DatabaseAccess {
                     listener.showMessage(true, "Failed to sync");
                 }
             });
-            request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+            request.setRetryPolicy(new DefaultRetryPolicy(10,
                     1,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             Volley.newRequestQueue(context).add(request);
