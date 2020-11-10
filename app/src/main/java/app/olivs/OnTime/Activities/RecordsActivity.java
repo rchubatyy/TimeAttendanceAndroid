@@ -45,7 +45,7 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
         for (int i=0; i<100; i++)
             options.add(i);
         ArrayAdapter<Integer> arrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, options);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_layout);
         noDays.setAdapter(arrayAdapter);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
     }
@@ -88,7 +88,13 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
 
                 });
                 alertDialogBuilder.setMessage(message);
-                AlertDialog alertDialog = alertDialogBuilder.create();
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface arg0) {
+                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                    }
+                });
                 if(!isFinishing())
                 alertDialog.show();
             }
@@ -106,7 +112,7 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
                 if(records.get(position).getResultID().equals(""))
                     text.setTextColor(ContextCompat.getColor(getContext(),R.color.colorError));
                 else
-                    text.setTextColor(Color.BLACK);
+                    text.setTextColor(Color.WHITE);
                 return view;
             }
         };
@@ -124,7 +130,6 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         noDaysSelected = adapterView.getItemAtPosition(i).toString();
-        System.out.println(noDaysSelected);
     }
 
     @Override

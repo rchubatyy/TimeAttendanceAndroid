@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:padding="@dimen/activity_horizontal_margin"
     tools:context=".Activities.SettingsActivity">
 
@@ -12,8 +13,9 @@
         layout="@layout/our_logo_and_info_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,14 +26,17 @@
         android:gravity="center"
         android:padding="2dp"
         android:text="Visit our website &amp; access tutorials"
-        android:textColor="@color/colorMain"
+        android:textColor="@color/colorDisabled"
         android:textSize="18sp"
+        android:fontFamily="sans-serif-light"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:layout_width="318dp"
         android:layout_height="477dp"
+        android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,31 +49,33 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="2dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/businessFile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/logOut"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorButton"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_shape"
             android:onClick="logOut"
+            android:padding="5dp"
             android:text="De-register"
-            android:textSize="18dp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -77,10 +84,12 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorButton"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_shape"
             android:onClick="changeFile"
+            android:padding="5dp"
             android:text="Change business file"
-            android:textSize="18dp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -89,10 +98,12 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorButton"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_shape"
             android:onClick="sync"
+            android:padding="5dp"
             android:text="Sync all activity"
-            android:textSize="18dp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -101,8 +112,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:textSize="18dp"
             android:text="Syncing..."
+            android:textSize="18dp"
             android:visibility="invisible" />
 
     </LinearLayout>

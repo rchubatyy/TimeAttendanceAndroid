@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
+    android:background="@color/colorBackground"
     tools:context=".Activities.LoginActivity">
 
     <LinearLayout
@@ -15,14 +16,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="E-mail address"
+            android:fontFamily="sans-serif"
+            android:text="Email address"
+            android:textColor="@android:color/white"
             android:textSize="24sp" />
 
         <EditText
@@ -30,20 +33,22 @@
             style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/text_edit_shape"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorForm"
             android:ems="10"
             android:inputType="textEmailAddress"
-            android:textSize="22sp"
-            android:padding="5dp" />
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
             android:text="Password"
+            android:textColor="@android:color/white"
             android:textSize="24sp" />
 
         <EditText
@@ -51,21 +56,23 @@
             style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/text_edit_shape"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:background="@color/colorForm"
             android:ems="10"
             android:inputType="textPassword"
-            android:textSize="22sp"
-            android:padding="5dp" />
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/loginButton"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorButton"
+            android:background="@drawable/button_shape"
             android:onClick="onLoginPressed"
+            android:padding="15dp"
             android:text="Log in"
             android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -75,20 +82,22 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:paddingLeft="5dp"
             android:text="Forgot password"
-            android:textColor="@color/colorMain"
-            android:textSize="24sp" />
+            android:textColor="@color/colorDisabled"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/errorMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Error message"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:textSize="24sp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Error message"
+            android:textSize="21sp"
             android:visibility="invisible" />
 
     </LinearLayout>
@@ -97,19 +106,21 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="Learn more &amp; Register"
-        android:textColor="@color/colorMain"
-        android:textSize="24sp"
+        android:fontFamily="sans-serif-light"
+        android:text="Learn more and register"
+        android:textColor="@color/colorDisabled"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
         layout="@layout/our_logo_and_info_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

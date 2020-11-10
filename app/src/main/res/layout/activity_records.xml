@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:padding="@dimen/activity_horizontal_margin"
     tools:context=".Activities.RecordsActivity">
 
@@ -22,10 +23,12 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorButton"
+        android:background="@drawable/colorless_button_shape"
         android:onClick="toSettings"
-        android:textSize="20sp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:text="Settings"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -34,8 +37,10 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorButton"
+        android:background="@drawable/colorless_button_shape"
         android:onClick="syncData"
+        android:paddingLeft="30sp"
+        android:paddingRight="30sp"
         android:text="Sync"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,8 +51,9 @@
         layout="@layout/our_logo_and_info_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,7 +108,7 @@
             style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorButton"
+            android:background="@drawable/button_shape"
             android:onClick="clear"
             android:textSize="18sp"
             android:text="Go!" />

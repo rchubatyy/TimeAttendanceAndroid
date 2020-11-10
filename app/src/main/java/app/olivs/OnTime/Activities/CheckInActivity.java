@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -194,10 +195,14 @@ public class CheckInActivity extends AppCompatActivity
 
     private void setControlButtonsEnabled(boolean state) {
         for (Button button : controlButtons) {
-            button.setBackgroundTintList(ContextCompat.getColorStateList(this, state ? R.color.colorButton : R.color.colorDisabled));
+            //button.setBackgroundTintList(ContextCompat.getColorStateList(this, state ? R.color.colorButton : R.color.colorDisabled));
             button.setEnabled(state);
             button.setOnClickListener(state ? this : null);
         }
+        for (int i=0; i<4; i+=3)
+            controlButtons[i].setBackgroundResource(state ? R.drawable.button_shape : R.color.colorDisabled);
+        for (int i=1; i<3; i++)
+            controlButtons[i].setBackgroundResource(state ? R.drawable.colorless_button_shape : R.color.colorDisabled);
     }
 
     private synchronized void prepareActivity(Location location){
@@ -278,7 +283,13 @@ public class CheckInActivity extends AppCompatActivity
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface arg0) {
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                        }
+                    });
                     alertDialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();

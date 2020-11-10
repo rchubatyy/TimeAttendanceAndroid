@@ -1,8 +1,10 @@
 package app.olivs.OnTime.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +33,7 @@ import app.olivs.OnTime.Utilities.UserManager;
 
 import static app.olivs.OnTime.Utilities.Constants.GET_USER_BUSINESS_FILES_LIST;
 
-public class BusinessFileActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener, ListView.OnItemClickListener{
+public class BusinessFileActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener, ListView.OnItemClickListener, ListView.OnScrollListener{
 
     private ListView businessFileList;
     private ArrayList<BusinessFile> businessFileArray;
@@ -104,9 +106,8 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     @Override
     public void onItemClick(AdapterView<?> adapterView, @NotNull View view, int i, long l) {
         view.setSelected(true);
-        System.out.println(i);
         selected = i;
-        okButton.setBackgroundTintList(ContextCompat.getColorStateList(this,R.color.colorButton));
+        okButton.setBackgroundResource(R.drawable.button_shape);
         okButton.setEnabled(true);
     }
 
@@ -114,6 +115,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         ArrayAdapter<String> businessFileAdapter = new ArrayAdapter<>(this, R.layout.text_view_cell_layout, R.id.listViewItem, listOfNames(businessFileArray));
         businessFileList.setAdapter(businessFileAdapter);
         businessFileList.setOnItemClickListener(this);
+        businessFileList.setOnScrollListener(this);
     }
 
     public void toMainScreen(View v){
@@ -132,4 +134,17 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         }
     }
 
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+        int firstPosition = absListView.getFirstVisiblePosition() - businessFileList.getHeaderViewsCount();
+        int sel = selected - firstPosition;
+        View v = absListView.getChildAt(sel);
+        if (v!=null)
+            v.setSelected(true);
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+    }
 }

@@ -4,4 +4,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:srcCompat="@drawable/primary_logo_rgb" />
+    android:background="@color/colorBackground"
+    app:srcCompat="@drawable/primary_logo_semi_reversed_rgb_small" />

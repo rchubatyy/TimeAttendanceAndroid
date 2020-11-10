@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:padding="@dimen/activity_horizontal_margin"
     tools:context=".Activities.CheckInActivity">
 
@@ -11,18 +12,20 @@
         android:id="@+id/areWeReady"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:padding="1dp"
         android:text="Getting status..."
         android:textSize="20sp"
         app:autoSizeMinTextSize="15dp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/results"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/companyInformation" />
 
     <TextView
         android:id="@+id/companyInformation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:maxLines="7"
         android:padding="1dp"
         android:text="Loading information..."
@@ -37,10 +40,12 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorButton"
+        android:background="@drawable/colorless_button_shape"
         android:onClick="toSettings"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:text="Settings"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -49,10 +54,12 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorButton"
+        android:background="@drawable/colorless_button_shape"
         android:onClick="toMyHistory"
-        android:text="My History"
-        android:textSize="20sp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:text="History"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -61,8 +68,9 @@
         layout="@layout/our_logo_and_info_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,19 +89,20 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.707">
 
         <Button
             android:id="@+id/CHECKIN"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             android:enabled="false"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
@@ -110,21 +119,24 @@
                 android:id="@+id/BREAKSTART"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:enabled="false"
-                android:text="Start\nBreak"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Start Break"
                 android:textSize="20sp" />
 
             <Button
                 android:id="@+id/BREAKEND"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:enabled="false"
-                android:singleLine="false"
-                android:text="Finish\nbreak"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Finish break"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -133,7 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:enabled="false"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
