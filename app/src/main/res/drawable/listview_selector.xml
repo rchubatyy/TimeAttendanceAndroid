@@ -3,7 +3,7 @@
     <item android:state_pressed="true"
         android:drawable="@color/colorDisabled">
     </item>
-    <item android:state_selected="true"
+    <item android:state_activated="true"
         android:drawable="@color/colorButton">
     </item>
 </selector>
