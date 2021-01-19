@@ -130,7 +130,8 @@ public class CheckInActivity extends AppCompatActivity
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocationReadyStatus(manager);
             } else {
-                areWeReady.setText("Sorry, you can't check in because location permission is not enabled.");
+                areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
+                areWeReady.setText("Location is not enabled.");
                 setControlButtonsEnabled(false);
             }
         }
@@ -169,7 +170,8 @@ public class CheckInActivity extends AppCompatActivity
     public void onClick(final View view) {
         if (!getLocationReadyStatus(manager) ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            areWeReady.setText("Sorry, you can't use the service because location is not available.");
+            areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
+            areWeReady.setText("Location is not available.");
 
             return;
         }
@@ -208,8 +210,9 @@ public class CheckInActivity extends AppCompatActivity
             e.printStackTrace();
         }
         results.setText("Getting location...");
-        if (location != null)
+        if (location != null) {
             prepareActivity(location);
+        }
         else
         getLastLocation();
 
@@ -275,9 +278,9 @@ public class CheckInActivity extends AppCompatActivity
 
                         String result = map.get(body.getString("ActivityType"));
                         if (isSite) {
-                            result += ("\n at " + siteName);
+                            result += (" at " + siteName);
                         } else
-                            result += ("!\n" + siteName);
+                            result += ("! " + siteName);
 
                         record.setResult(siteName, response.getString("acdID"));
                         results.setText(result);
@@ -341,6 +344,7 @@ public class CheckInActivity extends AppCompatActivity
 
 
     private boolean getLocationReadyStatus(LocationManager manager) {
+        areWeReady.setTextColor(Color.WHITE);
         List<String> providers = manager.getProviders(true);
         switch (manager.getProviders(true).size()) {
             case 3:
@@ -356,7 +360,8 @@ public class CheckInActivity extends AppCompatActivity
                 setControlButtonsEnabled(true);
                 return true;
             default:
-                areWeReady.setText("Sorry, you can't use the service because location is not available.");
+                areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
+                areWeReady.setText("Location is not available.");
                 setControlButtonsEnabled(false);
                 return false;
         }
@@ -408,16 +413,16 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        
+        System.out.println("changed");
     }
 
     @Override
     public void onProviderEnabled(@NonNull String provider) {
-
+        getLocationReadyStatus(manager);
     }
 
     @Override
     public void onProviderDisabled(@NonNull String provider) {
-
+        getLocationReadyStatus(manager);
     }
 }
