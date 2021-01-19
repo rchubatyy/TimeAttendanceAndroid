@@ -210,11 +210,10 @@ public class CheckInActivity extends AppCompatActivity
             e.printStackTrace();
         }
         results.setText("Getting location...");
-        if (location != null) {
+        if (location != null)
             prepareActivity(location);
-        }
         else
-        getLastLocation();
+            getLastLocation();
 
 
 
@@ -265,7 +264,6 @@ public class CheckInActivity extends AppCompatActivity
                 setControlButtonsEnabled(true);
             }
         };
-        System.out.println(body);
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -385,16 +383,12 @@ public class CheckInActivity extends AppCompatActivity
                             public void onLocationResult(LocationResult locationResult) {
                                 super.onLocationResult(locationResult);
                                 Location location = locationResult.getLastLocation();
-                                System.out.println(location.getLatitude() + " " + location.getLongitude());
                                 prepareActivity(location);
                             }
                         };
                         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                                 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                        }
-                        else{
-                            System.out.println("no location granted");
                         }
                     }
                     else
@@ -413,7 +407,6 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        System.out.println("changed");
     }
 
     @Override
