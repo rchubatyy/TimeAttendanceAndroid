@@ -136,6 +136,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     public void toMainScreen(View v){
         UserManager.getInstance().saveSelectedBusinessFile(this, selected, businessFileArray.get(selected));
         Intent intent = new Intent(this,CheckInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.putExtra("token",businessFileArray.get(selected).getToken());
         startActivity(intent);
     }
@@ -144,6 +145,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         if (UserManager.getInstance().fileSelected(this) >= 0) {
             String token = UserManager.getInstance().getParam(this,"businessFileToken");
             Intent intent = new Intent(this, CheckInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             intent.putExtra("token",token);
             startActivity(intent);
         }

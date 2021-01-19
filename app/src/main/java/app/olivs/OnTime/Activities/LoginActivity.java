@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
 
     private void toBusinessFileSelect(String token){
         Intent intent = new Intent(this, BusinessFileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.putExtra("userToken",token);
         startActivity(intent);
     }

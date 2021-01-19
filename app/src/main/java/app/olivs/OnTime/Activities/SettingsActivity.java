@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void logOut(View v){
         UserManager.getInstance().logout(this);
         Intent intent = new Intent (SettingsActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
         //finish();
     }
@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void changeFile(View v){
         UserManager.getInstance().removedBusinessFile(this);
         Intent intent = new Intent (SettingsActivity.this, BusinessFileActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
     }
 
