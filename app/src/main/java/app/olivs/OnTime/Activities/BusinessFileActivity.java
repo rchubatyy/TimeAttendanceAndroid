@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
 
     private ListView businessFileList;
     private ArrayList<BusinessFile> businessFileArray;
+    private SwipeRefreshLayout swipeContainer;
     private Button okButton;
     private int selected = -1;
 
@@ -47,6 +49,17 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         setContentView(R.layout.activity_business_file);
         businessFileList = findViewById(R.id.recordsList);
         okButton = findViewById(R.id.okButton);
+        swipeContainer = findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchNames();
+            }
+        });
+        fetchNames();
+    }
+
+    private void fetchNames(){
         JSONObject body = new JSONObject();
         Intent intent = getIntent();
         String token = intent.getStringExtra("userToken");
@@ -80,6 +93,9 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
                 }
                 UserManager.getInstance().saveBusinessFiles(this,businessFileArray);
                 showNames();
+                okButton.setBackgroundResource(R.color.colorDisabled);
+                okButton.setEnabled(false);
+                swipeContainer.setRefreshing(false);
             }
 
         } catch (JSONException e) {
@@ -92,6 +108,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     public void onErrorResponse(VolleyError error) {
         businessFileArray = UserManager.getInstance().getBusinessFilesOffline(this);
         showNames();
+        swipeContainer.setRefreshing(false);
     }
 
     @NotNull

@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -22,9 +23,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -63,7 +68,7 @@ import app.olivs.OnTime.Utilities.UserManager;
 import static app.olivs.OnTime.Utilities.Constants.*;
 
 public class CheckInActivity extends AppCompatActivity
-        implements Response.Listener<JSONObject>, Response.ErrorListener, View.OnClickListener {
+        implements Response.Listener<JSONObject>, Response.ErrorListener, View.OnClickListener, LocationListener {
 
     private TextView companyInformation, areWeReady, results;
     private Button[] controlButtons;
@@ -114,7 +119,7 @@ public class CheckInActivity extends AppCompatActivity
         };
         this.registerReceiver(locationSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         this.databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
     }
 
@@ -174,6 +179,7 @@ public class CheckInActivity extends AppCompatActivity
         ActivityState state = ActivityState.valueOf(activityType);
         record = new CheckInInfo(userToken, dbToken, time, state, true);
         body = new JSONObject();
+        Location location = null;
         try {
             body.put("UserToken", userToken);
             body.put("DBToken", dbToken);
@@ -182,11 +188,29 @@ public class CheckInActivity extends AppCompatActivity
             body.put("isLiveDataOrSync", "L");
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
-            //record.setLocation(location.getLatitude(), location.getLongitude());
+
+            boolean isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if (!isGPSEnabled && !isNetworkEnabled){
+                getLocationReadyStatus(manager);
+            }
+            else if (isNetworkEnabled) {
+                manager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, this, null);
+
+                location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            else if (isGPSEnabled) {
+                manager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+
+                location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         results.setText("Getting location...");
+        if (location != null)
+            prepareActivity(location);
+        else
         getLastLocation();
 
 
@@ -224,20 +248,21 @@ public class CheckInActivity extends AppCompatActivity
         map.put(ActivityState.BREAKEND.name(), "Ended break");
         map.put(ActivityState.CHECKOUT.name(), "Checked out");
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setPositiveButton("Go OK", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
             }
         });
-        alertDialogBuilder.setTitle("Could not connect to service, but your activity is saved on your phone.");
-        alertDialogBuilder.setMessage("You need to sync the activity later. To do this, go to Settings > Sync all activity.");
+        alertDialogBuilder.setMessage("Could not connect to service, but your activity is saved on your phone. \n \n" +
+                "You need to sync the activity later. To do this, go to Settings > Sync all activity.");
         final Runnable runnable = new Runnable(){
             @Override
             public void run() {
                 setControlButtonsEnabled(true);
             }
         };
+        System.out.println(body);
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -355,12 +380,16 @@ public class CheckInActivity extends AppCompatActivity
                             public void onLocationResult(LocationResult locationResult) {
                                 super.onLocationResult(locationResult);
                                 Location location = locationResult.getLastLocation();
+                                System.out.println(location.getLatitude() + " " + location.getLongitude());
                                 prepareActivity(location);
                             }
                         };
                         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                                 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                        }
+                        else{
+                            System.out.println("no location granted");
                         }
                     }
                     else
@@ -377,5 +406,18 @@ public class CheckInActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        
+    }
 
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
 }

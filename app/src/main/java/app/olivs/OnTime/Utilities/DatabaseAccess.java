@@ -12,12 +12,14 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,7 +166,7 @@ public class DatabaseAccess {
                     listener.showMessage(true, "Failed to sync");
                 }
             });
-            request.setRetryPolicy(new DefaultRetryPolicy(10,
+            request.setRetryPolicy(new DefaultRetryPolicy(10000,
                     1,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             Volley.newRequestQueue(context).add(request);
