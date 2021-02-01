@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -31,6 +32,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -52,6 +54,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -106,7 +109,12 @@ public class CheckInActivity extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 companyInformation.setText("Failed to load company information. Try again later.");
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return getDefaultHeaders(getApplicationContext());
+            }
+        };
         Volley.newRequestQueue(this).add(request);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         BroadcastReceiver locationSwitchStateReceiver = new BroadcastReceiver() {
@@ -146,14 +154,14 @@ public class CheckInActivity extends AppCompatActivity
     @Override
     public void onResponse(@NotNull JSONObject response) {
         try {
-            String success = response.getString("cmpSuccess");
-            if (success.equals("Y")) {
-                String infoHTML = response.getString("cmpInfoMessage");
+            //String success = response.getString("cmpSuccess");
+            //if (success.equals("Y")) {
+                String infoHTML = response.getString("InfoMessage");
                 companyInformation.setText(Html.fromHtml(infoHTML).toString().replaceAll("\n",""));
-            } else {
+            /*} else {
                 String error = response.getString("cmpError");
                 companyInformation.setText(error);
-            }
+            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -187,10 +195,10 @@ public class CheckInActivity extends AppCompatActivity
             body.put("DBToken", dbToken);
             body.put("ActivityType", activityType);
             body.put("PhDateTime", time);
-            body.put("isLiveDataOrSync", "L");
+            body.put("IsLiveDataOrSync", "L");
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
-
+            body.put("IdentifierForVendor", identifierForVendor(this));
             boolean isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean isNetworkEnabled = manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!isGPSEnabled && !isNetworkEnabled){
@@ -201,7 +209,7 @@ public class CheckInActivity extends AppCompatActivity
 
                 location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
-            else if (isGPSEnabled) {
+            else {
                 manager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
 
                 location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -271,24 +279,24 @@ public class CheckInActivity extends AppCompatActivity
                 try {
                     boolean isSite = response.getInt("acdSiteID") == 1;
                     String siteName = response.getString("acdSiteName");
-                    if (response.getString("acdSuccess").equals("Y")) {
+                    //if (response.getString("acdSuccess").equals("Y")) {
 
 
                         String result = map.get(body.getString("ActivityType"));
                         if (isSite) {
-                            result += (" at " + siteName);
+                            result += ("\n at " + siteName);
                         } else
-                            result += ("! " + siteName);
+                            result += ("!\n" + siteName);
 
                         record.setResult(siteName, response.getString("acdID"));
                         results.setText(result);
                         alertDialogBuilder.setMessage(result);
-                    } else {
+                    /*} else {
                         String message = response.getString("acdErrorMessage");
                         results.setText(message);
                         record.setResult("", "");
                         alertDialogBuilder.setMessage(message);
-                    }
+                    }*/
 
                     databaseAccess.open();
                     databaseAccess.insertRecord(record);
@@ -301,6 +309,7 @@ public class CheckInActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
+                    //get response body and parse with appropriate encoding
                     new Handler(Looper.getMainLooper()).postDelayed(runnable,3000);
                     record.setResult("", "");
                     String result = map.get(body.getString("ActivityType"));
@@ -323,7 +332,12 @@ public class CheckInActivity extends AppCompatActivity
 
 
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return getDefaultHeaders(getApplicationContext());
+            }
+        };
         request.setRetryPolicy(new DefaultRetryPolicy(10000,
                 1,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

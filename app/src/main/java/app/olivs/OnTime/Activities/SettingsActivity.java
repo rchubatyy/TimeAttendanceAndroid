@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
         TextView email = findViewById(R.id.email);
         email.setText("Your login: " + UserManager.getInstance().getParam(this, "email"));
         TextView businessFile = findViewById(R.id.businessFile);
-        businessFile.setText("Registered with: " + UserManager.getInstance().getParam(this, "businessFileName"));
+        businessFile.setText("Registered with:\n" + UserManager.getInstance().getParam(this, "businessFileName"));
         syncStatus = findViewById(R.id.syncStatus);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
         TextView link = findViewById(R.id.link);
@@ -51,15 +52,13 @@ public class SettingsActivity extends AppCompatActivity {
     public void logOut(View v){
         UserManager.getInstance().logout(this);
         Intent intent = new Intent (SettingsActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         //finish();
     }
 
     public void changeFile(View v){
-        UserManager.getInstance().removedBusinessFile(this);
         Intent intent = new Intent (SettingsActivity.this, BusinessFileActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
     }
 

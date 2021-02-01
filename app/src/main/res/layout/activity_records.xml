@@ -86,7 +86,8 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/text_edit_shape" />
+            android:background="@drawable/text_edit_shape"
+            android:textAlignment="viewEnd" />
 
         <TextView
             android:id="@+id/textView11"

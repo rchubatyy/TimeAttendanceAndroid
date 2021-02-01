@@ -1,40 +1,46 @@
 package app.olivs.OnTime.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import app.olivs.OnTime.Model.BusinessFile;
 import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.UserManager;
 
 import static app.olivs.OnTime.Utilities.Constants.GET_USER_BUSINESS_FILES_LIST;
+import static app.olivs.OnTime.Utilities.Constants.getDefaultHeaders;
 
-public class BusinessFileActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener, ListView.OnItemClickListener{
+public class BusinessFileActivity extends AppCompatActivity implements Response.Listener<JSONArray>, Response.ErrorListener, ListView.OnItemClickListener{
 
     private ListView businessFileList;
     private ArrayList<BusinessFile> businessFileArray;
@@ -45,11 +51,12 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        continueIfSelectedFile();
+        //continueIfSelectedFile();
         setContentView(R.layout.activity_business_file);
         businessFileList = findViewById(R.id.recordsList);
         okButton = findViewById(R.id.okButton);
         swipeContainer = findViewById(R.id.swipeContainer);
+        businessFileArray = new ArrayList<>();
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -70,34 +77,77 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, GET_USER_BUSINESS_FILES_LIST, body, this, this);
+        final JsonObjectToArrayRequest request = new JsonObjectToArrayRequest(Request.Method.POST, GET_USER_BUSINESS_FILES_LIST, body, this, this){
+            @Override
+            public Map<String, String> getHeaders() {
+                return getDefaultHeaders(getApplicationContext());
+            }
+        };
         Volley.newRequestQueue(this).add(request);
     }
 
-    protected void onResume() {
-        super.onResume();
-        continueIfSelectedFile();
+    private static class JsonObjectToArrayRequest extends JsonRequest<JSONArray> {
+
+        public JsonObjectToArrayRequest(int method, String url, JSONObject jsonRequest,
+                                      Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+            super(method, url, (jsonRequest == null) ? null : jsonRequest.toString(), listener,
+                    errorListener);
+        }
+
+        @Override
+        protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+            try {
+                String jsonString = new String(response.data,
+                        HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
+                return Response.success(new JSONArray(jsonString),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            } catch (UnsupportedEncodingException | JSONException e) {
+                return Response.error(new ParseError(e));
+            }
+        }
+
     }
 
+
     @Override
-    public void onResponse(@NotNull JSONObject response) {
+    public void onResponse(@NotNull JSONArray response) {
+        businessFileArray.clear();
         try {
-            String success = response.getString("dbtSuccess");
-            if (success.equals("Y")){
-                businessFileArray = new ArrayList<>();
-                JSONArray businessFiles = response.getJSONArray("dbtBusinessFiles");
-                for (int i=0; i<businessFiles.length(); i++){
-                    String name = businessFiles.getJSONObject(i).getString("dbtBusinessName");
-                    String token = businessFiles.getJSONObject(i).getString("dbtDBToken");
+            //String success = response.getString("dbtSuccess");
+            //if (success.equals("Y")){
+                for (int i=0; i<response.length(); i++){
+                    JSONObject businessFile = response.getJSONObject(i);
+                    String name = businessFile.getString("xxbBusinessName");
+                    String token = businessFile.getString("xxbDBToken");
                     businessFileArray.add(new BusinessFile(name, token));
+                }
+                if (businessFileArray.isEmpty()) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    alertDialogBuilder.setPositiveButton("Return", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            UserManager.getInstance().logout(getApplicationContext());
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    alertDialogBuilder.setMessage("There are no business files associated to this user.");
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface arg0) {
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                        }
+                    });
+                    alertDialog.show();
                 }
                 UserManager.getInstance().saveBusinessFiles(this,businessFileArray);
                 showNames();
                 okButton.setBackgroundResource(R.color.colorDisabled);
                 okButton.setEnabled(false);
                 swipeContainer.setRefreshing(false);
-            }
-
+            //
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -136,7 +186,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     public void toMainScreen(View v){
         UserManager.getInstance().saveSelectedBusinessFile(this, selected, businessFileArray.get(selected));
         Intent intent = new Intent(this,CheckInActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("token",businessFileArray.get(selected).getToken());
         startActivity(intent);
     }
@@ -145,7 +195,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         if (UserManager.getInstance().fileSelected(this) >= 0) {
             String token = UserManager.getInstance().getParam(this,"businessFileToken");
             Intent intent = new Intent(this, CheckInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("token",token);
             startActivity(intent);
         }

@@ -12,24 +12,25 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import app.olivs.OnTime.Model.ActivityState;
 import app.olivs.OnTime.Model.CheckInInfo;
 
 import static app.olivs.OnTime.Utilities.Constants.REGISTER_USER_ACTIVITY;
+import static app.olivs.OnTime.Utilities.Constants.getDefaultHeaders;
+import static app.olivs.OnTime.Utilities.Constants.identifierForVendor;
 
 public class DatabaseAccess {
-    private SQLiteOpenHelper openHelper;
+    private final SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
     private static DatabaseAccess instance;
 
@@ -120,7 +121,7 @@ public class DatabaseAccess {
         listener.reloadData();
     }
 
-    public void sync (Context context, final onSyncCompleteListener listener) throws JSONException {
+    public void sync (final Context context, final onSyncCompleteListener listener) throws JSONException {
         List<CheckInInfo> unsynced = new ArrayList<>();
         unsynced = getAllRecords(context,true);
         final boolean[] syncSuccess = {true};
@@ -140,6 +141,7 @@ public class DatabaseAccess {
             body.put("isLiveDataOrSync", "S");
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
+            body.put("IdentifierForVendor", identifierForVendor(context));
             final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -147,8 +149,6 @@ public class DatabaseAccess {
                     ContentValues values = new ContentValues();
                     values.put("isLiveData", "S");
                     try {
-                        if (response.getString("acdSuccess").equals("N") && syncSuccess[0])
-                            syncSuccess[0] = false;
                         values.put("resultID", response.getString("acdID"));
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -165,7 +165,12 @@ public class DatabaseAccess {
                     if (unsyncedNo[0] == 0)
                     listener.showMessage(true, "Failed to sync");
                 }
-            });
+            }){
+                @Override
+                public Map<String, String> getHeaders(){
+                    return getDefaultHeaders(context);
+                }
+            };
             request.setRetryPolicy(new DefaultRetryPolicy(10000,
                     1,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
