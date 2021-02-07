@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:padding="1dp"
-        android:text="Getting status..."
+        android:text="@string/getting_status"
         android:textSize="18sp"
         app:autoSizeMinTextSize="15dp"
         app:autoSizeTextType="uniform"
@@ -28,7 +28,7 @@
         android:layout_marginTop="12dp"
         android:maxLines="3"
         android:padding="1dp"
-        android:text="Loading information..."
+        android:text="@string/loading_information"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
@@ -42,7 +42,7 @@
         android:onClick="toSettings"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:text="Settings"
+        android:text="@string/settings"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -56,7 +56,7 @@
         android:onClick="toMyHistory"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:text="History"
+        android:text="@string/history"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -104,7 +104,7 @@
             android:enabled="false"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-            android:text="Check in"
+            android:text="@string/check_in"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -122,8 +122,9 @@
                 android:enabled="false"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:text="Start Break"
-                android:textSize="20sp" />
+                android:text="@string/start_break"
+                android:textSize="20sp"
+                tools:ignore="ButtonStyle" />
 
             <Button
                 android:id="@+id/BREAKEND"
@@ -134,8 +135,9 @@
                 android:enabled="false"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:text="Finish break"
-                android:textSize="20sp" />
+                android:text="@string/finish_break"
+                android:textSize="20sp"
+                tools:ignore="ButtonStyle" />
         </LinearLayout>
 
         <Button
@@ -147,7 +149,7 @@
             android:enabled="false"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-            android:text="Check Out"
+            android:text="@string/check_out"
             android:textSize="20sp" />
 
     </LinearLayout>

@@ -29,9 +29,8 @@ public class Constants {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Api-Key", context.getString(R.string.api_key));
         headers.put("Olivs-Root-Password", context.getString(R.string.olivs_root_password));
-        headers.put("Olivs-API-Real-IP", new GetPublicIP().doInBackground());
-        headers.put("Olivs-API-Computer-Name", Settings.Global.getString(context.getContentResolver(),
-                "device_name"));
+        headers.put("Olivs-API-Real-IP", "127.0.0.1");
+        headers.put("Olivs-API-Computer-Name", "BTMSOFTPC");
         return headers;
     }
 
@@ -49,31 +48,5 @@ public class Constants {
             }
             return uniqueID;
         }
-
-    public static class GetPublicIP extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String publicIP = "127.0.0.1";
-            try  {
-                java.util.Scanner s = new java.util.Scanner(
-                        new java.net.URL(
-                                "https://www.icanhazip.com")
-                                .openStream(), "UTF-8")
-                        .useDelimiter("\\A");
-                publicIP = s.next();
-            } catch (java.io.IOException e) {
-                e.printStackTrace();
-            }
-
-            return publicIP;
-        }
-
-        @Override
-        protected void onPostExecute(String publicIp) {
-            super.onPostExecute(publicIp);
-
-        }
-    }
 
 }

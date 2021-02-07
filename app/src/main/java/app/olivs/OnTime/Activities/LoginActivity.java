@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -42,7 +40,7 @@ import static app.olivs.OnTime.Utilities.Constants.getDefaultHeaders;
 public class LoginActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     private EditText emailField, passwordField;
-    private TextView errorMessage, forgotLink, registerLink;
+    private TextView errorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +48,12 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        //continueIfLoggedIn();
         setContentView(R.layout.activity_login);
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
         errorMessage = findViewById(R.id.errorMessage);
-        forgotLink = findViewById(R.id.forgotLink);
-        registerLink = findViewById(R.id.registerLink);
+        TextView forgotLink = findViewById(R.id.forgotLink);
+        TextView registerLink = findViewById(R.id.registerLink);
         forgotLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,12 +145,6 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         finish();
     }
 
-    private void continueIfLoggedIn(){
-        if (UserManager.getInstance().isLoggedIn(this)){
-            String token = UserManager.getInstance().getParam(this,"userToken");
-            toBusinessFileSelect(token);
-        }
-    }
 
     private void hideKeyboard(AppCompatActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);

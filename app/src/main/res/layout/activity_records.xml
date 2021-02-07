@@ -27,7 +27,7 @@
         android:onClick="toSettings"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:text="Settings"
+        android:text="@string/settings"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -41,7 +41,7 @@
         android:onClick="syncData"
         android:paddingLeft="30sp"
         android:paddingRight="30sp"
-        android:text="Sync"
+        android:text="@string/sync"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -74,7 +74,7 @@
             android:layout_weight="1"
             android:lines="1"
             android:padding="5dp"
-            android:text="Clear records older than"
+            android:text="@string/clear_records_older_than"
             android:textAlignment="center"
             android:textSize="18sp"
             app:autoSizeMinTextSize="15sp"
@@ -98,7 +98,7 @@
             android:padding="5dp"
             android:paddingLeft="1dp"
             android:paddingEnd="1dp"
-            android:text="days"
+            android:text="@string/days"
             android:textAlignment="center"
             android:textSize="18sp"
             app:autoSizeMinTextSize="15sp"
@@ -112,6 +112,6 @@
             android:background="@drawable/button_shape"
             android:onClick="clear"
             android:textSize="18sp"
-            android:text="Go!" />
+            android:text="@string/go" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

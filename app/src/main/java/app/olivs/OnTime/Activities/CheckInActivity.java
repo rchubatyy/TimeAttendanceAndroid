@@ -64,6 +64,7 @@ import java.util.Objects;
 
 import app.olivs.OnTime.Model.ActivityState;
 import app.olivs.OnTime.Model.CheckInInfo;
+import app.olivs.OnTime.Utilities.ConnectivityReceiver;
 import app.olivs.OnTime.Utilities.DatabaseAccess;
 import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.UserManager;
@@ -71,7 +72,7 @@ import app.olivs.OnTime.Utilities.UserManager;
 import static app.olivs.OnTime.Utilities.Constants.*;
 
 public class CheckInActivity extends AppCompatActivity
-        implements Response.Listener<JSONObject>, Response.ErrorListener, View.OnClickListener, LocationListener {
+        implements Response.Listener<JSONObject>, View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private TextView companyInformation, areWeReady, results;
     private Button[] controlButtons;
@@ -81,11 +82,14 @@ public class CheckInActivity extends AppCompatActivity
     private DatabaseAccess databaseAccess;
     private CheckInInfo record;
     private JSONObject body;
+    private JsonObjectRequest companyInfoRequest;
+    private boolean infoShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_in);
+        ConnectivityReceiver.listener = this;
         companyInformation = findViewById(R.id.companyInformation);
         areWeReady = findViewById(R.id.areWeReady);
         results = findViewById(R.id.results);
@@ -104,18 +108,19 @@ public class CheckInActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, GET_COMPANY_INFORMATION, body, this, new Response.ErrorListener() {
+        companyInfoRequest = new JsonObjectRequest(Request.Method.POST, GET_COMPANY_INFORMATION, body, this, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                companyInformation.setText("Failed to load company information. Try again later.");
+                infoShown = false;
+                companyInformation.setText("Failed to load company information.");
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return getDefaultHeaders(getApplicationContext());
             }
         };
-        Volley.newRequestQueue(this).add(request);
+        Volley.newRequestQueue(this).add(companyInfoRequest);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         BroadcastReceiver locationSwitchStateReceiver = new BroadcastReceiver() {
             @Override
@@ -154,22 +159,12 @@ public class CheckInActivity extends AppCompatActivity
     @Override
     public void onResponse(@NotNull JSONObject response) {
         try {
-            //String success = response.getString("cmpSuccess");
-            //if (success.equals("Y")) {
-                String infoHTML = response.getString("InfoMessage");
-                companyInformation.setText(Html.fromHtml(infoHTML).toString().replaceAll("\n",""));
-            /*} else {
-                String error = response.getString("cmpError");
-                companyInformation.setText(error);
-            }*/
+            infoShown = true;
+            String infoHTML = response.getString("InfoMessage");
+            companyInformation.setText(Html.fromHtml(infoHTML).toString().replaceAll("\n", ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
 
     }
 
@@ -183,6 +178,7 @@ public class CheckInActivity extends AppCompatActivity
 
             return;
         }
+        setControlButtonsEnabled(false);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         final String time = dateFormat.format(Calendar.getInstance().getTime());
         final String activityType = view.getResources().getResourceEntryName(view.getId());
@@ -199,30 +195,29 @@ public class CheckInActivity extends AppCompatActivity
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
             body.put("IdentifierForVendor", identifierForVendor(this));
-            boolean isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            /*boolean isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean isNetworkEnabled = manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isGPSEnabled && !isNetworkEnabled){
+            if (!isGPSEnabled && !isNetworkEnabled) {
                 getLocationReadyStatus(manager);
-            }
-            else if (isNetworkEnabled) {
-                manager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, this, null);
-
-                location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            else {
-                manager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
-
+            } else if (isNetworkEnabled) {
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        0, 0,this);
                 location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
+                //areWeReady.setText("Latitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude());
+                manager.removeUpdates(this);
+            } else {
+                manager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+                location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
         results.setText("Getting location...");
-        if (location != null)
+        getLastLocation();
+        /*if (location != null) {
             prepareActivity(location);
-        else
-            getLastLocation();
-
+        } else
+            getLastLocation();*/
 
 
     }
@@ -233,13 +228,13 @@ public class CheckInActivity extends AppCompatActivity
             button.setEnabled(state);
             button.setOnClickListener(state ? this : null);
         }
-        for (int i=0; i<4; i+=3)
+        for (int i = 0; i < 4; i += 3)
             controlButtons[i].setBackgroundResource(state ? R.drawable.button_shape : R.color.colorDisabled);
-        for (int i=1; i<3; i++)
+        for (int i = 1; i < 3; i++)
             controlButtons[i].setBackgroundResource(state ? R.drawable.colorless_button_shape : R.color.colorDisabled);
     }
 
-    private synchronized void prepareActivity(Location location){
+    private synchronized void prepareActivity(Location location) {
         results.setText("Uploading data...");
         try {
             body.put("GPSLat", location.getLatitude());
@@ -251,7 +246,8 @@ public class CheckInActivity extends AppCompatActivity
         uploadActivity();
     }
 
-    private synchronized void uploadActivity() {setControlButtonsEnabled(false);
+    private synchronized void uploadActivity() {
+        setControlButtonsEnabled(false);
         final Map<String, String> map = new HashMap();
         map.put(ActivityState.CHECKIN.name(), "Checked in");
         map.put(ActivityState.BREAKSTART.name(), "Started break");
@@ -266,7 +262,7 @@ public class CheckInActivity extends AppCompatActivity
         });
         alertDialogBuilder.setMessage("Could not connect to service, but your activity is saved on your phone. \n \n" +
                 "You need to sync the activity later. To do this, go to Settings > Sync all activity.");
-        final Runnable runnable = new Runnable(){
+        final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 setControlButtonsEnabled(true);
@@ -275,22 +271,22 @@ public class CheckInActivity extends AppCompatActivity
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                new Handler(Looper.getMainLooper()).postDelayed(runnable,3000);
+                new Handler(Looper.getMainLooper()).postDelayed(runnable, 3000);
                 try {
                     boolean isSite = response.getInt("acdSiteID") == 1;
                     String siteName = response.getString("acdSiteName");
                     //if (response.getString("acdSuccess").equals("Y")) {
 
 
-                        String result = map.get(body.getString("ActivityType"));
-                        if (isSite) {
-                            result += ("\n at " + siteName);
-                        } else
-                            result += ("!\n" + siteName);
+                    String result = map.get(body.getString("ActivityType"));
+                    if (isSite) {
+                        result += ("\n at " + siteName);
+                    } else
+                        result += ("!\n" + siteName);
 
-                        record.setResult(siteName, response.getString("acdID"));
-                        results.setText(result);
-                        alertDialogBuilder.setMessage(result);
+                    record.setResult(siteName, response.getString("acdID"));
+                    results.setText(result);
+                    alertDialogBuilder.setMessage(result);
                     /*} else {
                         String message = response.getString("acdErrorMessage");
                         results.setText(message);
@@ -310,7 +306,7 @@ public class CheckInActivity extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 try {
                     //get response body and parse with appropriate encoding
-                    new Handler(Looper.getMainLooper()).postDelayed(runnable,3000);
+                    new Handler(Looper.getMainLooper()).postDelayed(runnable, 3000);
                     record.setResult("", "");
                     String result = map.get(body.getString("ActivityType"));
                     result += "!\nCould not connect to service.";
@@ -319,7 +315,7 @@ public class CheckInActivity extends AppCompatActivity
                     databaseAccess.insertRecord(record);
                     databaseAccess.close();
                     final AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                         @Override
                         public void onShow(DialogInterface arg0) {
                             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
@@ -332,7 +328,7 @@ public class CheckInActivity extends AppCompatActivity
 
 
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return getDefaultHeaders(getApplicationContext());
@@ -381,8 +377,8 @@ public class CheckInActivity extends AppCompatActivity
 
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            /*fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
                     Location location = task.getResult();
@@ -404,9 +400,10 @@ public class CheckInActivity extends AppCompatActivity
                                 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
                         }
-                    }
-                    else
+                    } else {
+                        areWeReady.setText("Latitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude());
                         prepareActivity(location);
+                    }
                 }
 
             }).addOnFailureListener(new OnFailureListener() {
@@ -414,22 +411,32 @@ public class CheckInActivity extends AppCompatActivity
                 public void onFailure(@NonNull Exception e) {
                     results.setText("Failed to get location.");
                 }
-            });
+            });*/
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setInterval(500)
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setNumUpdates(1);
+            final LocationCallback locationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    Location location = locationResult.getLastLocation();
+                    prepareActivity(location);
+                }
+            };
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+            }
         }
     }
 
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-        getLocationReadyStatus(manager);
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        getLocationReadyStatus(manager);
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if (isConnected) {
+            companyInformation.setText("Loading information...");
+            Volley.newRequestQueue(this).add(companyInfoRequest);
+        }
     }
 }

@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Email address"
+            android:text="@string/email_address"
             android:textColor="@android:color/white"
             android:textSize="24sp" />
 
@@ -40,14 +40,16 @@
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:autofillHints=""
+            tools:ignore="LabelFor" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="@android:color/white"
             android:textSize="24sp" />
 
@@ -63,7 +65,9 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:autofillHints=""
+            tools:ignore="LabelFor" />
 
         <Button
             android:id="@+id/loginButton"
@@ -73,8 +77,8 @@
             android:background="@drawable/button_shape"
             android:onClick="onLoginPressed"
             android:padding="15dp"
-            android:text="Log in"
-            android:textSize="24dp"
+            android:text="@string/log_in"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -84,10 +88,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-light"
-            android:paddingLeft="5dp"
-            android:text="Forgot password"
+            android:paddingStart="5dp"
+            android:text="@string/forgot_password"
             android:textColor="@color/colorDisabled"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/errorMessage"
@@ -96,7 +101,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Error message"
             android:textSize="21sp"
             android:visibility="invisible" />
 
@@ -107,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Learn more and register"
+        android:text="@string/learn_more_and_register"
         android:textColor="@color/colorDisabled"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"

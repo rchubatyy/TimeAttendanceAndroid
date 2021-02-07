@@ -126,10 +126,11 @@ public class DatabaseAccess {
         unsynced = getAllRecords(context,true);
         final boolean[] syncSuccess = {true};
         if (unsynced.isEmpty()){
-            listener.showMessage(true, "Nothing to sync");
+            listener.showMessage(false, "All records synced");
+            return;
         }
-        final int[] unsyncedNo = {unsynced.size()};
-        for (final CheckInInfo record: unsynced){
+        //final int[] unsyncedNo = {unsynced.size()};
+        final CheckInInfo record = unsynced.get(unsynced.size()-1);
             JSONObject body = new JSONObject();
             body.put("UserToken", record.getUserToken());
             body.put("DBToken", record.getDbToken());
@@ -154,15 +155,16 @@ public class DatabaseAccess {
                         e.printStackTrace();
                     }
                     database.update("tblRecords",values,"id = " +id, null);
-                    unsyncedNo[0]--;
-                    if (unsyncedNo[0] == 0)
-                    listener.showMessage(!syncSuccess[0], syncSuccess[0] ? "Synced!" : "Some items did not sync");
+                    try {
+                        sync(context, listener);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    unsyncedNo[0]--;
-                    if (unsyncedNo[0] == 0)
+
                     listener.showMessage(true, "Failed to sync");
                 }
             }){
@@ -175,7 +177,7 @@ public class DatabaseAccess {
                     1,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             Volley.newRequestQueue(context).add(request);
-        }
+
     }
 
     public interface onClearCompleteListener{

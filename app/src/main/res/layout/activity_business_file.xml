@@ -34,12 +34,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:fontFamily="sans-serif"
-            android:text="Select Business File"
+            android:text="@string/select_business_file"
             android:textSize="24sp"
             app:autoSizeMinTextSize="15dp"
             app:autoSizeTextType="uniform" />
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -52,7 +51,7 @@
             android:layout_marginEnd="8dp"
             android:choiceMode="singleChoice"
             android:divider="@color/colorDisabled"
-            android:dividerHeight="2px"
+            android:dividerHeight="2dp"
             android:padding="16dp"
             app:layout_constraintHeight_percent="0.65">
 
@@ -81,8 +80,8 @@
             android:enabled="false"
             android:onClick="toMainScreen"
             android:padding="15dp"
-            android:text="OK"
-            android:textSize="22dp" />
+            android:text="@string/ok"
+            android:textSize="22sp" />
     </FrameLayout>
 
 

@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="2dp"
-        android:text="Visit our website &amp; access tutorials"
+        android:text="@string/visit_our_website_amp_access_tutorials"
         android:textColor="@color/colorDisabled"
         android:textSize="18sp"
         android:fontFamily="sans-serif-light"
@@ -76,7 +76,7 @@
             android:background="@drawable/button_shape"
             android:onClick="logOut"
             android:padding="5dp"
-            android:text="De-register"
+            android:text="@string/de_register"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -90,7 +90,7 @@
             android:background="@drawable/button_shape"
             android:onClick="changeFile"
             android:padding="5dp"
-            android:text="Change business file"
+            android:text="@string/change_business_file"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -104,7 +104,7 @@
             android:background="@drawable/button_shape"
             android:onClick="sync"
             android:padding="5dp"
-            android:text="Sync all activity"
+            android:text="@string/sync_all_activity"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -114,8 +114,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:text="Syncing..."
-            android:textSize="18dp"
+            android:text="@string/syncing"
+            android:textSize="18sp"
             android:visibility="invisible" />
 
     </LinearLayout>
