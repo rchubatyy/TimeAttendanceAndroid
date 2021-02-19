@@ -1,14 +1,15 @@
 package app.olivs.OnTime.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONException;
 
@@ -27,9 +28,9 @@ public class SettingsActivity extends AppCompatActivity {
         TextView userName = findViewById(R.id.userName);
         userName.setText(UserManager.getInstance().getParam(this, "name"));
         TextView email = findViewById(R.id.email);
-        email.setText("Your login: " + UserManager.getInstance().getParam(this, "email"));
+        email.setText(String.format("Your login: %s", UserManager.getInstance().getParam(this, "email")));
         TextView businessFile = findViewById(R.id.businessFile);
-        businessFile.setText("Registered with:\n" + UserManager.getInstance().getParam(this, "businessFileName"));
+        businessFile.setText(String.format("Registered with:\n%s", UserManager.getInstance().getParam(this, "businessFileName")));
         syncStatus = findViewById(R.id.syncStatus);
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
         TextView link = findViewById(R.id.link);
@@ -54,7 +55,6 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent (SettingsActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        //finish();
     }
 
     public void changeFile(View v){
@@ -65,13 +65,19 @@ public class SettingsActivity extends AppCompatActivity {
     public void sync(View v) throws JSONException {
         syncStatus.setVisibility(View.VISIBLE);
         syncStatus.setTextColor(ContextCompat.getColor(this,R.color.colorMain));
-        syncStatus.setText("Syncing...");
+        syncStatus.setText(R.string.syncing);
         databaseAccess.open();
         databaseAccess.sync(this, new DatabaseAccess.onSyncCompleteListener() {
             @Override
             public void showMessage(boolean isError, String message) {
                 syncStatus.setTextColor(ContextCompat.getColor(getBaseContext(),isError ? R.color.colorError : R.color.colorMain));
                 syncStatus.setText(message);
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        syncStatus.setText("");
+                    }
+                }, 3000);
             }
         });
     }

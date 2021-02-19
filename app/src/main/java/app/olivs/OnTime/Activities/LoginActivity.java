@@ -77,26 +77,16 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     protected void onResume() {
         super.onResume();
         errorMessage.setVisibility(View.INVISIBLE);
-        //continueIfLoggedIn();
     }
 
     @Override
     public void onResponse(@NonNull JSONObject response){
         try {
-            //String success = response.getString("usrSuccess");
-            //if (success.equals("Y")){
                 String userToken = response.getString("usrUserToken");
                 String name = response.getString("usrFirstName");
                 String surname = response.getString("usrLastName");
                 UserManager.getInstance().login(this, name + " " + surname, emailField.getText().toString(), userToken);
                 toBusinessFileSelect(userToken);
-            /*}
-            else{
-                passwordField.setText("");
-                String error = response.getString("usrErrorMessage");
-                showMessage(true, error);
-            }*/
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -148,9 +138,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
 
     private void hideKeyboard(AppCompatActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }

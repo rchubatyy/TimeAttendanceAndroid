@@ -1,14 +1,10 @@
 package app.olivs.OnTime.Activities;
 
 import android.content.Intent;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.view.Display;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.UserManager;
 
 public class SplashScreenActivity extends AppCompatActivity {

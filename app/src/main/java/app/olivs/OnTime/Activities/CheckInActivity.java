@@ -1,12 +1,7 @@
 package app.olivs.OnTime.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,29 +10,25 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -46,15 +37,11 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -64,12 +51,15 @@ import java.util.Objects;
 
 import app.olivs.OnTime.Model.ActivityState;
 import app.olivs.OnTime.Model.CheckInInfo;
+import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.ConnectivityReceiver;
 import app.olivs.OnTime.Utilities.DatabaseAccess;
-import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.UserManager;
 
-import static app.olivs.OnTime.Utilities.Constants.*;
+import static app.olivs.OnTime.Utilities.Constants.GET_COMPANY_INFORMATION;
+import static app.olivs.OnTime.Utilities.Constants.REGISTER_USER_ACTIVITY;
+import static app.olivs.OnTime.Utilities.Constants.getDefaultHeaders;
+import static app.olivs.OnTime.Utilities.Constants.identifierForVendor;
 
 public class CheckInActivity extends AppCompatActivity
         implements Response.Listener<JSONObject>, View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
@@ -112,11 +102,11 @@ public class CheckInActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 infoShown = false;
-                companyInformation.setText("Failed to load company information.");
+                companyInformation.setText(R.string.failed_to_load_company_information);
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 return getDefaultHeaders(getApplicationContext());
             }
         };
@@ -144,7 +134,7 @@ public class CheckInActivity extends AppCompatActivity
                 getLocationReadyStatus(manager);
             } else {
                 areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
-                areWeReady.setText("Location is not enabled.");
+                areWeReady.setText(R.string.location_not_enabled);
                 setControlButtonsEnabled(false);
             }
         }
@@ -174,18 +164,17 @@ public class CheckInActivity extends AppCompatActivity
         if (!getLocationReadyStatus(manager) ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
-            areWeReady.setText("Location is not available.");
+            areWeReady.setText(R.string.location_not_available);
 
             return;
         }
         setControlButtonsEnabled(false);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         final String time = dateFormat.format(Calendar.getInstance().getTime());
         final String activityType = view.getResources().getResourceEntryName(view.getId());
         ActivityState state = ActivityState.valueOf(activityType);
         record = new CheckInInfo(userToken, dbToken, time, state, true);
         body = new JSONObject();
-        Location location = null;
         try {
             body.put("UserToken", userToken);
             body.put("DBToken", dbToken);
@@ -212,7 +201,7 @@ public class CheckInActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        results.setText("Getting location...");
+        results.setText(R.string.getting_location);
         getLastLocation();
         /*if (location != null) {
             prepareActivity(location);
@@ -235,7 +224,7 @@ public class CheckInActivity extends AppCompatActivity
     }
 
     private synchronized void prepareActivity(Location location) {
-        results.setText("Uploading data...");
+        results.setText(R.string.uploading_data);
         try {
             body.put("GPSLat", location.getLatitude());
             body.put("GPSLon", location.getLongitude());
@@ -248,7 +237,7 @@ public class CheckInActivity extends AppCompatActivity
 
     private synchronized void uploadActivity() {
         setControlButtonsEnabled(false);
-        final Map<String, String> map = new HashMap();
+        final Map<String, String> map = new HashMap<>();
         map.put(ActivityState.CHECKIN.name(), "Checked in");
         map.put(ActivityState.BREAKSTART.name(), "Started break");
         map.put(ActivityState.BREAKEND.name(), "Ended break");
@@ -330,7 +319,7 @@ public class CheckInActivity extends AppCompatActivity
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 return getDefaultHeaders(getApplicationContext());
             }
         };
@@ -356,20 +345,20 @@ public class CheckInActivity extends AppCompatActivity
         List<String> providers = manager.getProviders(true);
         switch (manager.getProviders(true).size()) {
             case 3:
-                areWeReady.setText("Location is available through GPS and network.");
+                areWeReady.setText(R.string.location_available_gps_network);
                 setControlButtonsEnabled(true);
                 return true;
             case 2:
                 String provider = providers.get(1);
                 if (provider.equals("gps"))
-                    areWeReady.setText("Location is available through GPS.");
+                    areWeReady.setText(R.string.location_available_gps);
                 else
-                    areWeReady.setText("Location is available through network.");
+                    areWeReady.setText(R.string.location_available_network);
                 setControlButtonsEnabled(true);
                 return true;
             default:
                 areWeReady.setTextColor(ContextCompat.getColor(this, R.color.colorError));
-                areWeReady.setText("Location is not available.");
+                areWeReady.setText(R.string.location_not_available);
                 setControlButtonsEnabled(false);
                 return false;
         }
@@ -378,40 +367,7 @@ public class CheckInActivity extends AppCompatActivity
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            /*fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if (location == null) {
-                        LocationRequest locationRequest = new LocationRequest()
-                                .setInterval(5)
-                                .setFastestInterval(0)
-                                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                                .setNumUpdates(1);
-                        final LocationCallback locationCallback = new LocationCallback() {
-                            @Override
-                            public void onLocationResult(LocationResult locationResult) {
-                                super.onLocationResult(locationResult);
-                                Location location = locationResult.getLastLocation();
-                                prepareActivity(location);
-                            }
-                        };
-                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                        }
-                    } else {
-                        areWeReady.setText("Latitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude());
-                        prepareActivity(location);
-                    }
-                }
 
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    results.setText("Failed to get location.");
-                }
-            });*/
             LocationRequest locationRequest = LocationRequest.create()
                     .setInterval(500)
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -434,8 +390,8 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-        if (isConnected) {
-            companyInformation.setText("Loading information...");
+        if (isConnected && !infoShown) {
+            companyInformation.setText(R.string.loading_information);
             Volley.newRequestQueue(this).add(companyInfoRequest);
         }
     }

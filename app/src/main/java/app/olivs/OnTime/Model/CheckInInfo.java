@@ -5,9 +5,13 @@ import java.io.Serializable;
 public class CheckInInfo implements Serializable {
 
     private int id;
-    private String userToken, dbToken, time, site, resultID;
+    private String userToken;
+    private String dbToken;
+    private final String time;
+    private String site;
+    private String resultID;
     private Double lat, lon;
-    private ActivityState state;
+    private final ActivityState state;
     private boolean isLiveData;
 
 

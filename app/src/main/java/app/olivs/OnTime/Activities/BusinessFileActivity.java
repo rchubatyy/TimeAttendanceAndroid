@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,7 +50,6 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //continueIfSelectedFile();
         setContentView(R.layout.activity_business_file);
         businessFileList = findViewById(R.id.recordsList);
         okButton = findViewById(R.id.okButton);
@@ -113,8 +111,6 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
     public void onResponse(@NotNull JSONArray response) {
         businessFileArray.clear();
         try {
-            //String success = response.getString("dbtSuccess");
-            //if (success.equals("Y")){
                 for (int i=0; i<response.length(); i++){
                     JSONObject businessFile = response.getJSONObject(i);
                     String name = businessFile.getString("xxbBusinessName");
@@ -147,7 +143,6 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
                 okButton.setBackgroundResource(R.color.colorDisabled);
                 okButton.setEnabled(false);
                 swipeContainer.setRefreshing(false);
-            //
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -191,13 +186,4 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
         startActivity(intent);
     }
 
-    private void continueIfSelectedFile(){
-        if (UserManager.getInstance().fileSelected(this) >= 0) {
-            String token = UserManager.getInstance().getParam(this,"businessFileToken");
-            Intent intent = new Intent(this, CheckInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("token",token);
-            startActivity(intent);
-        }
-    }
 }

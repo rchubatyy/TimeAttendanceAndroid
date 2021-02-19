@@ -33,5 +33,13 @@
     <string name="de_register">De-register</string>
     <string name="change_business_file">Change business file</string>
     <string name="sync_all_activity">Sync all activity</string>
-    <string name="syncing">Syncing...</string>
+    <string name="syncing">Syncing…</string>
+    <string name="failed_to_load_company_information">Failed to load company information.</string>
+    <string name="location_not_enabled">Location is not enabled.</string>
+    <string name="getting_location">Getting location…</string>
+    <string name="uploading_data">Uploading data…</string>
+    <string name="location_available_gps_network">Location is available through GPS and network.</string>
+    <string name="location_available_gps">Location is available through GPS.</string>
+    <string name="location_available_network">Location is available through network.</string>
+    <string name="location_not_available">Location is not available.</string>
 </resources>

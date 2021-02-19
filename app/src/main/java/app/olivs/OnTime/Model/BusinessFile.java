@@ -3,8 +3,8 @@ package app.olivs.OnTime.Model;
 public class BusinessFile {
 
 
-    private String name;
-    private String token;
+    private final String name;
+    private final String token;
 
     public BusinessFile(String name, String token){
         this.name = name;

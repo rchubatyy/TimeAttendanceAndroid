@@ -1,14 +1,9 @@
 package app.olivs.OnTime.Activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,6 +12,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
@@ -24,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.olivs.OnTime.Model.CheckInInfo;
-import app.olivs.OnTime.Utilities.DatabaseAccess;
 import app.olivs.OnTime.R;
+import app.olivs.OnTime.Utilities.DatabaseAccess;
 
 public class RecordsActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
 
