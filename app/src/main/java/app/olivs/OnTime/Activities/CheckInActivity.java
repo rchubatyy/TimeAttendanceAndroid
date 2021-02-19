@@ -184,29 +184,11 @@ public class CheckInActivity extends AppCompatActivity
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
             body.put("IdentifierForVendor", identifierForVendor(this));
-            /*boolean isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            boolean isNetworkEnabled = manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                getLocationReadyStatus(manager);
-            } else if (isNetworkEnabled) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0, 0,this);
-                location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                //areWeReady.setText("Latitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude());
-                manager.removeUpdates(this);
-            } else {
-                manager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
-                location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
         results.setText(R.string.getting_location);
         getLastLocation();
-        /*if (location != null) {
-            prepareActivity(location);
-        } else
-            getLastLocation();*/
 
 
     }
@@ -294,7 +276,6 @@ public class CheckInActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-                    //get response body and parse with appropriate encoding
                     new Handler(Looper.getMainLooper()).postDelayed(runnable, 3000);
                     record.setResult("", "");
                     String result = map.get(body.getString("ActivityType"));
