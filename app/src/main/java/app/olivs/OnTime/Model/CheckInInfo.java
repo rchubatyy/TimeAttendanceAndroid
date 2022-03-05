@@ -13,6 +13,8 @@ public class CheckInInfo implements Serializable {
     private Double lat, lon;
     private final ActivityState state;
     private boolean isLiveData;
+    private int questionId;
+    private String answer;
 
 
     public CheckInInfo(String time, ActivityState state){
@@ -20,15 +22,17 @@ public class CheckInInfo implements Serializable {
         this.state = state;
     }
 
-    public CheckInInfo(String userToken, String dbToken, String time, ActivityState state, boolean isLiveData){
+    public CheckInInfo(String userToken, String dbToken, String time, ActivityState state, boolean isLiveData, int questionId, String answer){
         this.userToken = userToken;
         this.dbToken = dbToken;
         this.time = time.replace('/', '-');
         this.state = state;
         this.isLiveData = isLiveData;
+        this.questionId = questionId;
+        this.answer = answer;
     }
 
-    public CheckInInfo(int id, String userToken, String dbToken, String time,  Double lat, Double lon, String site, ActivityState state, boolean isLiveData, String resultID) {
+    public CheckInInfo(int id, String userToken, String dbToken, String time,  Double lat, Double lon, String site, ActivityState state, boolean isLiveData, String resultID, int questionId, String answer) {
         this.id = id;
         this.userToken = userToken;
         this.dbToken = dbToken;
@@ -39,6 +43,8 @@ public class CheckInInfo implements Serializable {
         this.state = state;
         this.isLiveData = isLiveData;
         this.resultID = resultID;
+        this.questionId = questionId;
+        this.answer = answer;
     }
 
     public int getId(){
@@ -79,6 +85,14 @@ public class CheckInInfo implements Serializable {
 
     public boolean isLiveData() {
         return isLiveData;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     public void setLocation(Double lat, Double lon){

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "records.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public DatabaseOpenHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -24,12 +24,17 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 "        Site TEXT," +
                 "        Type TEXT," +
                 "        isLiveData CHAR," +
-                "        resultID TEXT" +
+                "        resultID TEXT," +
+                "        questionID INTEGER," +
+                "        Answer VARCHAR(1)" +
                 "        );");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion == 1) {
+            db.execSQL("ALTER TABLE tblRecords ADD COLUMN questionID INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE tblRecords ADD COLUMN Answer VARCHAR(1) DEFAULT 'X'");
+        }
     }
 }

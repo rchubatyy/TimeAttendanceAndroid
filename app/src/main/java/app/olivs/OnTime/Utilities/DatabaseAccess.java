@@ -68,6 +68,8 @@ public class DatabaseAccess {
         values.put("Type", record.getState().name());
         values.put("isLiveData", record.isLiveData() ? "L" : "S");
         values.put("resultId", record.getResultID());
+        values.put("questionId",record.getQuestionId());
+        values.put("Answer",record.getAnswer());
         database.insert("tblRecords", null, values);
 
     }
@@ -107,7 +109,7 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CheckInInfo record = new CheckInInfo(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getDouble(4),cursor.getDouble(5),
-                    cursor.getString(6),ActivityState.valueOf(cursor.getString(7)),cursor.getString(8).equals("L"), cursor.getString(9));
+                    cursor.getString(6),ActivityState.valueOf(cursor.getString(7)),cursor.getString(8).equals("L"), cursor.getString(9), cursor.getInt(10),cursor.getString(11));
             list.add(record);
             cursor.moveToNext();
         }
@@ -126,6 +128,7 @@ public class DatabaseAccess {
         unsynced = getAllRecords(context,true);
         final boolean[] syncSuccess = {true};
         if (unsynced.isEmpty()){
+            if (listener != null)
             listener.showMessage(false, "All records synced");
             return;
         }
@@ -143,7 +146,9 @@ public class DatabaseAccess {
             body.put("OSVersion", "Android " + Build.VERSION.RELEASE);
             body.put("PhoneModel", Build.MANUFACTURER + " " + Build.MODEL);
             body.put("IdentifierForVendor", identifierForVendor(context));
-            final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
+            body.put("QuestionID",record.getQuestionId());
+            body.put("Answer",record.getAnswer());
+            final ServiceRequest request = new ServiceRequest(context, Request.Method.POST, REGISTER_USER_ACTIVITY, body, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     int id = record.getId();
@@ -154,6 +159,7 @@ public class DatabaseAccess {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    open();
                     database.update("tblRecords",values,"id = " +id, null);
                     try {
                         sync(context, listener);
@@ -164,15 +170,10 @@ public class DatabaseAccess {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    if (listener != null)
                     listener.showMessage(true, "Failed to sync");
                 }
-            }){
-                @Override
-                public Map<String, String> getHeaders(){
-                    return getDefaultHeaders(context);
-                }
-            };
+            });
             request.setRetryPolicy(new DefaultRetryPolicy(10000,
                     1,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

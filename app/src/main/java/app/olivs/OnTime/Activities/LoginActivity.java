@@ -32,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import app.olivs.OnTime.R;
+import app.olivs.OnTime.Utilities.ServiceRequest;
 import app.olivs.OnTime.Utilities.UserManager;
 
 import static app.olivs.OnTime.Utilities.Constants.INIT_USER_AUTHENTIFICATION;
@@ -113,12 +114,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         JSONObject body = new JSONObject();
         body.put("LoginEmail",emailField.getText());
         body.put("LoginPassword",passwordField.getText());
-        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, INIT_USER_AUTHENTIFICATION, body, this, this) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return getDefaultHeaders(getApplicationContext());
-            }
-        };
+        final ServiceRequest request = new ServiceRequest(this, Request.Method.POST, INIT_USER_AUTHENTIFICATION, body, this, this) ;
         Volley.newRequestQueue(this).add(request);
     }
 

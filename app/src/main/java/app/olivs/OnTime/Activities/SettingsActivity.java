@@ -1,5 +1,6 @@
 package app.olivs.OnTime.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,13 +14,18 @@ import androidx.core.content.ContextCompat;
 
 import org.json.JSONException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import app.olivs.OnTime.R;
+import app.olivs.OnTime.Utilities.DataManager;
 import app.olivs.OnTime.Utilities.DatabaseAccess;
 import app.olivs.OnTime.Utilities.UserManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private TextView syncStatus;
+    private TextView syncStatus, nextReminder;
     private DatabaseAccess databaseAccess;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +38,31 @@ public class SettingsActivity extends AppCompatActivity {
         TextView businessFile = findViewById(R.id.businessFile);
         businessFile.setText(String.format("Registered with:\n%s", UserManager.getInstance().getParam(this, "businessFileName")));
         syncStatus = findViewById(R.id.syncStatus);
+        nextReminder = findViewById(R.id.nextReminder);
+        String nextReminderDate = DataManager.getInstance().getNotificationTime(this);
+        if (nextReminderDate != null) {
+            nextReminder.setVisibility(View.VISIBLE);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat format1 = new SimpleDateFormat("dd MMM yyyy HH:mm");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat format2 = new SimpleDateFormat("dd-MM HH:mm");
+            Date date = null;
+            try {
+                date = format1.parse(nextReminderDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            nextReminder.setText(getResources().getString(R.string.next_reminder) + (date!=null ? format2.format(date): nextReminderDate));
+        }
+        else {
+            nextReminder.setVisibility(View.GONE);
+            nextReminder.setText("");
+        }
         databaseAccess = DatabaseAccess.getInstance(getApplicationContext());
         TextView link = findViewById(R.id.link);
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://know.olivs.app/time-attendance/mobile-app/"));
+                        Uri.parse("https://help.olivs.app/ontime/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }

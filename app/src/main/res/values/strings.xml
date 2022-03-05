@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">OnTime</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
@@ -31,9 +31,10 @@
     <string name="go">Go!</string>
     <string name="visit_our_website_amp_access_tutorials"><![CDATA[Visit our website & access tutorials]]></string>
     <string name="de_register">De-register</string>
-    <string name="change_business_file">Change business file</string>
+    <string name="change_business_file">Change linked business</string>
     <string name="sync_all_activity">Sync all activity</string>
     <string name="syncing">Syncing…</string>
+    <string name="next_reminder">Next Reminder:\n</string>
     <string name="failed_to_load_company_information">Failed to load company information.</string>
     <string name="location_not_enabled">Location is not enabled.</string>
     <string name="getting_location">Getting location…</string>
@@ -42,4 +43,8 @@
     <string name="location_available_gps">Location is available through GPS.</string>
     <string name="location_available_network">Location is available through network.</string>
     <string name="location_not_available">Location is not available.</string>
+    <string name="we_havent_seen_you">We haven’t seen you for a while. Click OK to continue.</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
 </resources>

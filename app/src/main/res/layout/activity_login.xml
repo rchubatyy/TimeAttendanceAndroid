@@ -30,19 +30,30 @@
 
         <EditText
             android:id="@+id/emailField"
-            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/colorForm"
-            android:ems="10"
             android:inputType="textEmailAddress"
             android:padding="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:autofillHints=""
-            tools:ignore="LabelFor" />
+            android:textColor="@android:color/white"/>
+
+<!--        <EditText-->
+<!--            android:id="@+id/emailField"-->
+<!--            style="@style/Widget.AppCompat.EditText"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--            android:background="@color/colorForm"-->
+<!--            android:ems="10"-->
+<!--            android:inputType="textEmailAddress"-->
+<!--            android:padding="10dp"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="24sp"-->
+<!--            android:autofillHints=""-->
+<!--            tools:ignore="LabelFor" />-->
 
         <TextView
             android:id="@+id/textView"
@@ -53,21 +64,32 @@
             android:textColor="@android:color/white"
             android:textSize="24sp" />
 
+
         <EditText
             android:id="@+id/passwordField"
-            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="15dp"
             android:background="@color/colorForm"
-            android:ems="10"
             android:inputType="textPassword"
             android:padding="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:autofillHints=""
-            tools:ignore="LabelFor" />
+            android:textColor="@android:color/white"/>
+<!--        <EditText-->
+<!--            android:id="@+id/passwordField"-->
+<!--            style="@style/Widget.AppCompat.EditText"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:background="@color/colorForm"-->
+<!--            android:ems="10"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:padding="10dp"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="24sp"-->
+<!--            android:autofillHints=""-->
+<!--            tools:ignore="LabelFor" />-->
 
         <Button
             android:id="@+id/loginButton"

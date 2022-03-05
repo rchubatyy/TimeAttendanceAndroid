@@ -54,6 +54,10 @@ public class RecordsActivity extends AppCompatActivity implements Spinner.OnItem
         showRecords();
     }
 
+    protected void onStop(){
+        super.onStop();
+        databaseAccess.close();
+    }
 
     public void clear(View v){
         databaseAccess.open();

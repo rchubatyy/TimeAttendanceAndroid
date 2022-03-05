@@ -4,43 +4,67 @@
     package="app.olivs.OnTime">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name="app.olivs.OnTime.Activities.SettingsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="app.olivs.OnTime.Activities.RecordsActivity"
+
+        <activity
+            android:name=".Activities.SettingsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="app.olivs.OnTime.Activities.CheckInActivity"
+        <activity
+            android:name=".Activities.RecordsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="app.olivs.OnTime.Activities.BusinessFileActivity"
+        <activity
+            android:name=".Activities.CheckInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.BusinessFileActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="app.olivs.OnTime.Activities.LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="app.olivs.OnTime.Activities.SplashScreenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
-            android:name="app.olivs.OnTime.Utilities.ConnectivityReceiver"
-            android:label="ConnectivityReceiver" >
+            android:name=".Receivers.ConnectivityReceiver"
+            android:label="ConnectivityReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".Receivers.CheckOutNotifier"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="TODO" />
+        <receiver
+            android:name=".Receivers.RestartReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

@@ -66,7 +66,7 @@
         layout="@layout/our_logo_and_info_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
