@@ -4,8 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_check_in.xml" value="0.3234375" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2642857142857143" />
         <entry key="app/src/main/res/layout/activity_records.xml" value="0.3234375" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.3234375" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.119" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.119" />
       </map>
     </option>
   </component>

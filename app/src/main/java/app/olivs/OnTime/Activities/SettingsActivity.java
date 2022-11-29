@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import app.olivs.OnTime.BuildConfig;
 import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.DataManager;
 import app.olivs.OnTime.Utilities.DatabaseAccess;
@@ -25,7 +26,7 @@ import app.olivs.OnTime.Utilities.UserManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private TextView syncStatus, nextReminder;
+    private TextView syncStatus, nextReminder, version;
     private DatabaseAccess databaseAccess;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
         email.setText(String.format("Your login: %s", UserManager.getInstance().getParam(this, "email")));
         TextView businessFile = findViewById(R.id.businessFile);
         businessFile.setText(String.format("Registered with:\n%s", UserManager.getInstance().getParam(this, "businessFileName")));
+        version = findViewById(R.id.version);
+        version.setText(String.format("Version: %s", BuildConfig.VERSION_NAME));
         syncStatus = findViewById(R.id.syncStatus);
         nextReminder = findViewById(R.id.nextReminder);
         String nextReminderDate = DataManager.getInstance().getNotificationTime(this);
@@ -63,6 +66,16 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://help.olivs.app/ontime/"));
+                browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(browserIntent);
+            }
+        });
+        TextView privacyPolicyLink = findViewById(R.id.privacyPolicy);
+        privacyPolicyLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://olivs.app/privacy-policy/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import app.olivs.OnTime.Utilities.DataManager;
 import app.olivs.OnTime.Utilities.UserManager;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -25,8 +26,10 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
             startActivity(intent);
         }
-        else
-        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+        else {
+            DataManager.getInstance().clearData(this);
+            startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+        }
         finish();
     }
 }

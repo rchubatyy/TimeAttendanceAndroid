@@ -1,6 +1,9 @@
 package app.olivs.OnTime.Utilities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import app.olivs.OnTime.Model.BusinessFile;
+import app.olivs.OnTime.Receivers.CheckOutNotifier;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -48,6 +52,11 @@ public class UserManager {
         editor.putString("userToken", "");
         editor.apply();
         removedBusinessFile(context);
+        DataManager.getInstance().clearData(context);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, CheckOutNotifier.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,0);
+        am.cancel(pendingIntent);
     }
 
     public synchronized void saveBusinessFiles(Context context, @NotNull ArrayList<BusinessFile> files){

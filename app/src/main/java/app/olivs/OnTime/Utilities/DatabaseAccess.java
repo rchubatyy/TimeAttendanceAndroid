@@ -109,7 +109,7 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CheckInInfo record = new CheckInInfo(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getDouble(4),cursor.getDouble(5),
-                    cursor.getString(6),ActivityState.valueOf(cursor.getString(7)),cursor.getString(8).equals("L"), cursor.getString(9), cursor.getInt(10),cursor.getString(11));
+                    cursor.getString(6),ActivityState.valueOf(cursor.getString(7)),cursor.getString(8).equals("L"), cursor.getString(9));
             list.add(record);
             cursor.moveToNext();
         }

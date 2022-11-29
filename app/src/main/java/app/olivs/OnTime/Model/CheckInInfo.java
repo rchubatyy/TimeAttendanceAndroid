@@ -22,17 +22,15 @@ public class CheckInInfo implements Serializable {
         this.state = state;
     }
 
-    public CheckInInfo(String userToken, String dbToken, String time, ActivityState state, boolean isLiveData, int questionId, String answer){
+    public CheckInInfo(String userToken, String dbToken, String time, ActivityState state, boolean isLiveData){
         this.userToken = userToken;
         this.dbToken = dbToken;
         this.time = time.replace('/', '-');
         this.state = state;
         this.isLiveData = isLiveData;
-        this.questionId = questionId;
-        this.answer = answer;
     }
 
-    public CheckInInfo(int id, String userToken, String dbToken, String time,  Double lat, Double lon, String site, ActivityState state, boolean isLiveData, String resultID, int questionId, String answer) {
+    public CheckInInfo(int id, String userToken, String dbToken, String time,  Double lat, Double lon, String site, ActivityState state, boolean isLiveData, String resultID) {
         this.id = id;
         this.userToken = userToken;
         this.dbToken = dbToken;
@@ -43,8 +41,6 @@ public class CheckInInfo implements Serializable {
         this.state = state;
         this.isLiveData = isLiveData;
         this.resultID = resultID;
-        this.questionId = questionId;
-        this.answer = answer;
     }
 
     public int getId(){

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 
 import androidx.core.app.NotificationCompat;
@@ -26,7 +27,8 @@ public class CheckOutNotifier extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, openIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         ActivityState state = DataManager.getInstance().getLastActivityType(context);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "OnTime")
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_foreground))
                 .setContentTitle(state == ActivityState.CHECKOUT ? "Time to check in" : "Time to check out")
                 .setContentText(state == ActivityState.CHECKOUT ? "Please do not forget to check in.": "Please do not forget to check out.")
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

@@ -35,6 +35,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SplashScreenActivity"
+            android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +46,7 @@
 
         <receiver
             android:name=".Receivers.ConnectivityReceiver"
+            android:exported="true"
             android:label="ConnectivityReceiver">
             <intent-filter>
                 <action

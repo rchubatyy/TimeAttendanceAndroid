@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,21 +24,18 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 import app.olivs.OnTime.R;
 import app.olivs.OnTime.Utilities.ServiceRequest;
 import app.olivs.OnTime.Utilities.UserManager;
 
 import static app.olivs.OnTime.Utilities.Constants.INIT_USER_AUTHENTIFICATION;
-import static app.olivs.OnTime.Utilities.Constants.getDefaultHeaders;
 
 public class LoginActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
@@ -54,12 +53,22 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
         passwordField = findViewById(R.id.passwordField);
         errorMessage = findViewById(R.id.errorMessage);
         TextView forgotLink = findViewById(R.id.forgotLink);
+        TextView privacyPolicyLink = findViewById(R.id.privacyPolicy);
         TextView registerLink = findViewById(R.id.registerLink);
         forgotLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://s1.olivs.app/0/en-au/olivs/forgot-user-login-password"));
+                browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(browserIntent);
+            }
+        });
+        privacyPolicyLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://olivs.app/privacy-policy/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }
@@ -71,6 +80,16 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
                         Uri.parse("https://olivs.app/ontime"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
+            }
+        });
+        passwordField.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -109,7 +128,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     }
 
     public void onLoginPressed(View view) throws JSONException {
-        hideKeyboard(this);
+        hideKeyboard();
         showMessage(false, "Logging in...");
         JSONObject body = new JSONObject();
         body.put("LoginEmail",emailField.getText());
@@ -132,12 +151,11 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     }
 
 
-    private void hideKeyboard(AppCompatActivity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
-        View view = activity.getCurrentFocus();
-        if (view == null) {
-            view = new View(activity);
+    private void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

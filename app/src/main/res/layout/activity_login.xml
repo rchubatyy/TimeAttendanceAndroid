@@ -72,9 +72,10 @@
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/colorForm"
+            android:imeOptions="actionDone"
             android:inputType="textPassword"
             android:padding="10dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
 <!--        <EditText-->
 <!--            android:id="@+id/passwordField"-->
 <!--            style="@style/Widget.AppCompat.EditText"-->
@@ -127,6 +128,19 @@
             android:visibility="invisible" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/privacyPolicy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/privacy_policy"
+        android:textColor="@color/colorDisabled"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/registerLink"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/registerLink"

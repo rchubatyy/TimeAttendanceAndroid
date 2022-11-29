@@ -14,6 +14,8 @@
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
     <string name="forgot_password">Forgot password</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="version_colon">Version: </string>
     <string name="learn_more_and_register">Learn more and register</string>
     <string name="select_business_file">Select Business File</string>
     <string name="ok">OK</string>

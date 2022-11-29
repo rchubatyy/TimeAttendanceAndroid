@@ -237,57 +237,21 @@ public class CheckInActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (questions[index]!=null && questions[index].length()>0){
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage(questions[index]);
-            alertDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    resetTimer();
-                    prepareBody(time, state, questionId, "Y");
-                }
-            });
-            alertDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    resetTimer();
-                    prepareBody(time, state, questionId, "N");
-                }
-            });
-            alertDialogBuilder.setNeutralButton(R.string.cancel,new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    resetTimer();
-                }
-            });
-            final AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface arg0) {
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-                    alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
-                }
-            });
-            alertDialog.show();
-        }
-        else{
-            prepareBody(time, state, questionId, "X");
-        }
+        prepareBody(time, state);
     }
 
-    private void prepareBody(String time, ActivityState state, int questionId, String answer){
-        record = new CheckInInfo(userToken, dbToken, time, state, true, questionId, answer);
-        try {
-            body.put("QuestionID", questionId);
-            body.put("Answer", answer);
+    private void prepareBody(String time, ActivityState state){
+        record = new CheckInInfo(userToken, dbToken, time, state, true);
+        //try {
+            //body.put("QuestionID", questionId);
+            //body.put("Answer", answer);
             setControlButtonsEnabled(false);
             gettingLocation = true;
             results.setText(R.string.getting_location);
             getLastLocation();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //} catch (JSONException e) {
+          //  e.printStackTrace();
+        //}
     }
 
     private void setControlButtonsEnabled(boolean state) {
@@ -421,13 +385,17 @@ public class CheckInActivity extends AppCompatActivity
     private boolean getLocationReadyStatus(LocationManager manager) {
         areWeReady.setTextColor(Color.WHITE);
         List<String> providers = manager.getProviders(true);
-        switch (manager.getProviders(true).size()) {
-            case 3:
-                areWeReady.setText(R.string.location_available_gps_network);
-                locationAvailable = true;
-                if (userInfoLoaded && !gettingLocation)
-                    setControlButtonsEnabled(true);
-                return true;
+        int providersCount = providers.size();
+        if (providersCount >= 3)
+        {
+            areWeReady.setText(R.string.location_available_gps_network);
+            locationAvailable = true;
+            if (userInfoLoaded && !gettingLocation)
+                setControlButtonsEnabled(true);
+            return true;
+        }
+        else
+        switch (providersCount) {
             case 2:
                 String provider = providers.get(1);
                 if (provider.equals("gps"))
@@ -506,7 +474,7 @@ public class CheckInActivity extends AppCompatActivity
 
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), CheckOutNotifier.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,PendingIntent.FLAG_MUTABLE);
         am.cancel(pendingIntent);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm");
         if (when!=null) {
@@ -570,6 +538,9 @@ public class CheckInActivity extends AppCompatActivity
                         JSONObject roster = response.getJSONObject("rsrRosterReminderData");
                         time = roster.getString("rsrReminderDateTime");
                         DataManager.getInstance().setNotificationTime(getApplicationContext(), time);
+                    }
+                    else{
+                        DataManager.getInstance().setNotificationTime(getApplicationContext(), null);
                     }
                     scheduleNotify(time);
                     assert ActivityState.values().length == 4;

@@ -33,6 +33,7 @@ public class DataManager {
         editor.apply();
     }
 
+
     public String getNotificationTime(Context context){
         return getSharedPreferences(context).getString("NotificationTime", null);
     }
@@ -65,6 +66,16 @@ public class DataManager {
 
     public ActivityState getLastActivityType(Context context){
         return ActivityState.valueOf(getSharedPreferences(context).getString("lastActivity", "CHECKOUT"));
+    }
+
+    public void clearData(Context context){
+        setNotificationTime(context, null);
+        for (int i = 0; i < ActivityState.values().length; i++) {
+            int id = getQuestionIdFor(context, ActivityState.values()[i]);
+            if (id > 0)
+                setQuestionFor(context, id, null);
+            setQuestionIdFor(context, ActivityState.values()[i], 0);
+        }
     }
 
 }
