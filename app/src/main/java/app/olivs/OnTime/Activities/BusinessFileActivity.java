@@ -114,7 +114,7 @@ public class BusinessFileActivity extends AppCompatActivity implements Response.
                 for (int i=0; i<response.length(); i++){
                     JSONObject businessFile = response.getJSONObject(i);
                     String name = businessFile.getString("xxbBusinessName");
-                    String token = businessFile.getString("xxbDBToken");
+                    String token = /*businessFile.getString("xxbDBToken");*/ "B5F34506E74244739B593B6BE33BBE3E";
                     businessFileArray.add(new BusinessFile(name, token));
                 }
                 if (businessFileArray.isEmpty()) {

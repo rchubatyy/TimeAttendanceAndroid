@@ -18,7 +18,7 @@ public class OurLogoAndInfo extends AppCompatImageView {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://olivs.app/ontime"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://olivs.com/ontime"));
                 context.startActivity(browserIntent);
             }
         });

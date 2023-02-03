@@ -65,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://help.olivs.app/ontime/"));
+                        Uri.parse("https://help.olivs.com/ontime/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }
@@ -75,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://olivs.app/privacy-policy/"));
+                        Uri.parse("https://olivs.com/privacy-policy/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }

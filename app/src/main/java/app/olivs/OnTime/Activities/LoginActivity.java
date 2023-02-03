@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
 import app.olivs.OnTime.R;
+import app.olivs.OnTime.Utilities.LanguageUtil;
 import app.olivs.OnTime.Utilities.ServiceRequest;
 import app.olivs.OnTime.Utilities.UserManager;
 
@@ -59,7 +60,8 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://s1.olivs.app/0/en-au/olivs/forgot-user-login-password"));
+                        Uri.parse("https://s1.olivs.com/0/"
+                                + LanguageUtil.getCurrentLanguage() + "/olivs/forgot-password"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }
@@ -68,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://olivs.app/privacy-policy/"));
+                        Uri.parse("https://olivs.com/privacy-policy/"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }
@@ -77,7 +79,8 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://olivs.app/ontime"));
+                        Uri.parse("https://s1.olivs.com/0/"
+                                + LanguageUtil.getCurrentLanguage() + "/olivs/create-new-user"));
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(browserIntent);
             }

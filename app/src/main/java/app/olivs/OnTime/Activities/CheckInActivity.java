@@ -34,8 +34,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -49,6 +51,8 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -173,6 +177,7 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (permissions.length > 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -498,8 +503,13 @@ public class CheckInActivity extends AppCompatActivity
         companyInfoRequest = new ServiceRequest(this, Request.Method.POST, GET_COMPANY_INFORMATION, body, this, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                infoShown = false;
-                companyInformation.setText(R.string.failed_to_load_company_information);
+                if (error instanceof ServerError){
+                    showErrorThenLogout(new String(error.networkResponse.data, StandardCharsets.UTF_8).replaceAll("\"", ""));
+                }
+                else {
+                    infoShown = false;
+                    companyInformation.setText(R.string.failed_to_load_company_information);
+                }
             }
         });
         Volley.newRequestQueue(this).add(companyInfoRequest);
@@ -643,6 +653,30 @@ public class CheckInActivity extends AppCompatActivity
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    private void showErrorThenLogout(String message){
+        UserManager.getInstance().removedBusinessFile(this);
+        UserManager.getInstance().logout(this);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent (CheckInActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+        alertDialogBuilder.setMessage(message);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+            }
+        });
+        alertDialog.show();
 
     }
 }
